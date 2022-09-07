@@ -1,19 +1,18 @@
 import express, { Request, Response } from "express";
 import * as http from "http";
 import httpStatus from "http-status";
-// import Logger from "../../contexts/shared/domain/logger";
-// import container from "./dependencyInjection";
-// import registerRoutes from "./routes";
+import Logger from "../../../contexts/shared/domain/logger";
+import container from "./dependencyInjection";
 
 export default class Server {
   private express: express.Express;
   readonly port: string;
-  // private logger: Logger;
+  private logger: Logger;
   httpServer?: http.Server;
 
   constructor(port: string) {
     this.port = port;
-    // this.logger = container.get("Shared.Logger");
+    this.logger = container.get("Shared.Logger");
     this.express = express();
     this.express.use(express.json());
     this.express.use(express.urlencoded({ extended: true }));
@@ -21,7 +20,7 @@ export default class Server {
     this.express.use(router);
     // registerRoutes(router);
     router.use((err: Error, req: Request, res: Response, next: Function) => {
-      // this.logger.error(err);
+      this.logger.error(err);
       res.status(httpStatus.INTERNAL_SERVER_ERROR).send(err.message);
     });
   }
@@ -29,12 +28,12 @@ export default class Server {
   async listen(): Promise<void> {
     return new Promise((resolve) => {
       this.httpServer = this.express.listen(this.port, () => {
-        /*this.logger.info(
+        this.logger.info(
           `Cart Backend App is running at http://localhost:${
             this.port
           } in ${this.express.get("env")} mode`
         );
-        this.logger.info("  Press CTRL-C to stop\n");*/
+        this.logger.info("  Press CTRL-C to stop\n");
         resolve();
       });
     });
