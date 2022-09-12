@@ -2,3 +2,7 @@ services:
   Apps.CartsMs.controllers.CartsGetByIdController:
     class: ../../controllers/cartsGetByIdController
     arguments: ["@CartsMs.cart.CartFindById"]
+
+  Apps.CartsMs.controllers.CartsPostController:
+    class: ../../controllers/cartsPostController
+    arguments: ["@CartsMs.cart.CartCreate"]

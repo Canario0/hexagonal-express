@@ -1,6 +1,5 @@
 import CartFindById from "../../../../../../contexts/cartsMs/cart/application/findById/cartFindById";
 import Cart from "../../../../../../contexts/cartsMs/cart/domain/cart";
-import CartItem from "../../../../../../contexts/cartsMs/cart/domain/cartItem";
 import CartNotFoundError from "../../../../../../contexts/cartsMs/cart/domain/cartNotFoundError";
 import CartId from "../../../../../../contexts/cartsMs/cart/domain/valueObject/cartId";
 import CartItems from "../../../../../../contexts/cartsMs/cart/domain/valueObject/cartItems";

@@ -6,3 +6,7 @@ services:
   CartsMs.cart.CartFindById:
     class: ../../../../../contexts/cartsMs/cart/application/findById/cartFindById
     arguments: ["@CartsMs.cart.CartRepository"]
+
+  CartsMs.cart.CartCreate:
+    class: ../../../../../contexts/cartsMs/cart/application/create/cartCreate
+    arguments: ["@CartsMs.cart.CartRepository"]

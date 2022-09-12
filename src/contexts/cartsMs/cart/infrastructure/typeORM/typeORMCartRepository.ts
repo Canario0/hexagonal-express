@@ -2,8 +2,10 @@ import { ObjectType } from "typeorm";
 import TypeORMRepositry from "../../../../shared/infrastructure/typeORM/typeORMRepository";
 import Cart from "../../domain/cart";
 import CartRepository from "../../domain/cartRepository";
-import cartId from "../../domain/valueObject/cartId";
+import CartCount from "../../domain/valueObject/cartCount";
+import CartId from "../../domain/valueObject/cartId";
 import TypeORMCart from "./entities/typeORMCart";
+import _ from "lodash";
 
 export default class TypeORMCartRepository
   extends TypeORMRepositry<TypeORMCart>
@@ -13,7 +15,7 @@ export default class TypeORMCartRepository
     return TypeORMCart;
   }
 
-  public async findById(id: cartId): Promise<Cart | null> {
+  public async findById(id: CartId): Promise<Cart | null> {
     const cartRepository = await this.getRepository();
     const rawCart = await cartRepository.findOne({
       where: { id: id.toString() },
@@ -25,6 +27,17 @@ export default class TypeORMCartRepository
       return rawCart;
     }
     return this.toAggregatedRoot(rawCart);
+  }
+
+  public async countById(id: CartId): Promise<CartCount> {
+    const cartRepository = await this.getRepository();
+    const rawCount = await cartRepository.countBy({ id: id.toString() });
+    return new CartCount(rawCount);
+  }
+
+  public async save(cart: Cart): Promise<void> {
+    const entity = _.omit(cart.toPrimitives(), ["items"]);
+    await this.persist(entity);
   }
 
   private toAggregatedRoot(rawCart: TypeORMCart) {
