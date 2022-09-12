@@ -1,1 +1,4 @@
 services:
+  Apps.CartsMs.controllers.CartsGetByIdController:
+    class: ../../controllers/cartsGetByIdController
+    arguments: ["@CartsMs.cart.CartFindById"]

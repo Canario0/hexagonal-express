@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "": "NODE_ENV=dev ts-node ./src/apps/cart/back/command/runConfigureRabbitMQCommand.ts",
-    "start:cart": "NODE_ENV=dev ts-node ./src/apps/cart/back/start.ts"
+    "start:cart": "NODE_ENV=dev ts-node ./src/apps/cart/back/start.ts",
+    "test:cart": "NODE_ENV=dev jest --coverage ./src/tests/contexts/cartsMs/"
   },
   "repository": {
     "type": "git",
@@ -18,9 +19,13 @@
   },
   "homepage": "https://github.com/Canario0/hexagonal-express#readme",
   "devDependencies": {
+    "@jest/types": "^29.0.3",
     "@types/express": "^4.17.13",
+    "@types/jest": "^29.0.1",
     "@types/node": "^18.6.1",
     "@types/uuid-validate": "0.0.1",
+    "jest": "^29.0.3",
+    "ts-jest": "^29.0.0",
     "tslint": "^6.1.3",
     "tslint-config-prettier": "^1.18.0",
     "tslint-eslint-rules": "^5.4.0"

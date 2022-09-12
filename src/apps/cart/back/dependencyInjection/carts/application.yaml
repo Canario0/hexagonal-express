@@ -1,1 +1,4 @@
 services:
+  CartsMs.cart.CartFindById:
+    class: ../../../../../contexts/cartsMs/cart/application/findById/cartFindById
+    arguments: []
