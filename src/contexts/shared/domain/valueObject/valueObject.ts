@@ -1,5 +1,5 @@
 export default interface ValueObject<T> {
   equals(o: T): boolean;
-  toJSON(): string;
+  toJSON(): unknown;
   toString(): string;
 }

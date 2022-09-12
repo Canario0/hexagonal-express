@@ -1,4 +1,8 @@
 services:
+  CartsMs.cart.CartRepository:
+    class: ../../../../../contexts/cartsMs/cart/infrastructure/typeORM/typeORMCartRepository
+    arguments: ["@Shared.TypeORMClientFactory"]
+
   CartsMs.cart.CartFindById:
     class: ../../../../../contexts/cartsMs/cart/application/findById/cartFindById
-    arguments: []
+    arguments: ["@CartsMs.cart.CartRepository"]

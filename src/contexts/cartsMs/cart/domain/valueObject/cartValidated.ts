@@ -11,8 +11,8 @@ export default class CartValidated implements ValueObject<CartValidated> {
     return this.value === o.value;
   }
 
-  public toJSON(): string {
-    return this.toString();
+  public toJSON(): boolean {
+    return this.value;
   }
 
   public toString(): string {

@@ -2,3 +2,14 @@ services:
   Shared.Logger:
     class: ../../../../../contexts/shared/infrastructure/wistonLogger
     arguments: []
+
+  Shared.TypeORMConfig:
+    factory:
+      class: ../../../../../contexts/cartsMs/shared/infrastructure/typeORMConfigFactory
+      method: "createConfig"
+
+  Shared.TypeORMClientFactory:
+    factory:
+      class: ../../../../../contexts/shared/infrastructure/typeORM/typeORMClientFactory
+      method: "createClient"
+    arguments: ["@Shared.TypeORMConfig"]

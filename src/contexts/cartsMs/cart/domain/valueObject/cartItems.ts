@@ -17,8 +17,8 @@ export default class CartItems implements ValueObject<CartItems> {
     return Array.from(this._value.values()).every((item) => o.has(item.id));
   }
 
-  public toJSON(): string {
-    return this.toString();
+  public toJSON() {
+    return Array.from(this._value.values()).map((item) => item.toPrimitives());
   }
 
   public toString(): string {

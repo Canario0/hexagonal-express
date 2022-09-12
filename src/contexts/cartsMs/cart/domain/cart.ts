@@ -47,9 +47,9 @@ export default class Cart extends AggregateRoot {
     id: string;
     userId: string;
     validated: boolean;
-    cartItems: { id: string; price: number; count: number }[];
+    items: { id: string; price: number; count: number }[];
   }) {
-    const cartItems = data.cartItems.map((item) =>
+    const cartItems = data.items.map((item) =>
       CartItem.fromPrimitives(item)
     );
     return new Cart(
