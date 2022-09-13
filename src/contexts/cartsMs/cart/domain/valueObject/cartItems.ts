@@ -1,6 +1,6 @@
 import ValueObject from "../../../../shared/domain/valueObject/valueObject";
-import CartItem from "../cartItem";
-import CartItemId from "./cartItemId";
+import CartItem from "../../../cartItem/domain/cartItem";
+import CartItemId from "../../../cartItem/domain/valueObject/cartItemId";
 
 export default class CartItems implements ValueObject<CartItems> {
   private _value: Map<string, CartItem>;

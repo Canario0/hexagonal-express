@@ -6,3 +6,11 @@ services:
   Apps.CartsMs.controllers.CartsPostController:
     class: ../../controllers/cartsPostController
     arguments: ["@CartsMs.cart.CartCreate"]
+
+  Apps.CartsMs.controllers.CartsItemsGetAllController:
+    class: ../../controllers/cartItemsGetAllController
+    arguments: ["@CartsMs.cartItem.CartItemFindAll"]
+
+  Apps.CartsMs.controllers.CartsItemsPostController:
+    class: ../../controllers/cartItemsPostController
+    arguments: ["@CartsMs.cartItem.CartItemCreate"]

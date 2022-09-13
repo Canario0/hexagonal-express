@@ -10,3 +10,15 @@ services:
   CartsMs.cart.CartCreate:
     class: ../../../../../contexts/cartsMs/cart/application/create/cartCreate
     arguments: ["@CartsMs.cart.CartRepository"]
+
+  CartsMs.cart.CartItemRepository:
+    class: ../../../../../contexts/cartsMs/cartItem/infrastructure/typeORM/typeORMCartItemRepository
+    arguments: ["@Shared.TypeORMClientFactory"]
+
+  CartsMs.cartItem.CartItemFindAll:
+    class: ../../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAll
+    arguments: ["@CartsMs.cart.CartItemRepository", "@CartsMs.cart.CartRepository" ]
+
+  CartsMs.cartItem.CartItemCreate:
+    class: ../../../../../contexts/cartsMs/cartItem/application/create/cartItemCreate
+    arguments: ["@CartsMs.cart.CartItemRepository", "@CartsMs.cart.CartRepository" ]

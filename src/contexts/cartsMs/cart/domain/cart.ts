@@ -1,5 +1,5 @@
 import AggregateRoot from "../../../shared/domain/aggregateRoot";
-import CartItem from "./cartItem";
+import CartItem from "../../cartItem/domain/cartItem";
 import CartId from "./valueObject/cartId";
 import CartItems from "./valueObject/cartItems";
 import CartValidated from "./valueObject/cartValidated";
@@ -47,11 +47,9 @@ export default class Cart extends AggregateRoot {
     id: string;
     userId: string;
     validated: boolean;
-    items: { id: string; price: number; count: number }[];
+    items: { id: string; price: number; count: number; cartId: string }[];
   }) {
-    const cartItems = data.items.map((item) =>
-      CartItem.fromPrimitives(item)
-    );
+    const cartItems = data.items.map((item) => CartItem.fromPrimitives(item));
     return new Cart(
       new CartId(data.id),
       new UserId(data.userId),

@@ -1,6 +1,6 @@
 import { DataSourceOptions } from "typeorm";
-import TypeORMCart from "../../cart/infrastructure/typeORM/entities/typeORMCart";
-import TypeORMCartItem from "../../cart/infrastructure/typeORM/entities/typeORMCartItem";
+import TypeORMCart from "./entities/typeORMCart";
+import TypeORMCartItem from "./entities/typeORMCartItem";
 
 export default class TypeORMConfigFactory {
   static createConfig(): DataSourceOptions {

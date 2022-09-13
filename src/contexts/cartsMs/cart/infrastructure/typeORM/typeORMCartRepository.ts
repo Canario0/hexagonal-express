@@ -4,8 +4,8 @@ import Cart from "../../domain/cart";
 import CartRepository from "../../domain/cartRepository";
 import CartCount from "../../domain/valueObject/cartCount";
 import CartId from "../../domain/valueObject/cartId";
-import TypeORMCart from "./entities/typeORMCart";
 import _ from "lodash";
+import TypeORMCart from "../../../shared/infrastructure/typeORM/entities/typeORMCart";
 
 export default class TypeORMCartRepository
   extends TypeORMRepositry<TypeORMCart>

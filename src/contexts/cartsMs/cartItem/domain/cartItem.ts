@@ -1,4 +1,5 @@
 import AggregateRoot from "../../../shared/domain/aggregateRoot";
+import CartId from "../../cart/domain/valueObject/cartId";
 import CartItemCount from "./valueObject/cartItemCount";
 import CartItemId from "./valueObject/cartItemId";
 import { Price } from "./valueObject/price";
@@ -6,13 +7,20 @@ import { Price } from "./valueObject/price";
 export default class CartItem extends AggregateRoot {
   public readonly id: CartItemId;
   public readonly price: Price;
+  public readonly cartId: CartId;
   private _count: CartItemCount;
 
-  constructor(id: CartItemId, price: Price, count: CartItemCount) {
+  constructor(
+    id: CartItemId,
+    price: Price,
+    count: CartItemCount,
+    cartId: CartId
+  ) {
     super();
     this.id = id;
     this.price = price;
     this._count = count;
+    this.cartId = cartId;
   }
 
   public get count() {
@@ -32,6 +40,7 @@ export default class CartItem extends AggregateRoot {
       id: this.id.toString(),
       price: this.price.value,
       count: this.count.value,
+      cartId: this.cartId.toString(),
     };
   }
 
@@ -39,15 +48,17 @@ export default class CartItem extends AggregateRoot {
     id: string;
     price: number;
     count: number;
+    cartId: string;
   }) {
     return new CartItem(
       new CartItemId(data.id),
       new Price(data.price),
-      new CartItemCount(data.count)
+      new CartItemCount(data.count),
+      new CartId(data.cartId)
     );
   }
 
-  public static create(id: CartItemId, price: Price, count: CartItemCount) {
-    return new CartItem(id, price, count);
+  public static create(id: CartItemId, price: Price, cartId: CartId) {
+    return new CartItem(id, price, CartItemCount.initialize(), cartId);
   }
 }

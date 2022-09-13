@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import * as http from "http";
 import httpStatus from "http-status";
+import morgan from "morgan";
 import Logger from "../../../contexts/shared/domain/logger";
 import container from "./dependencyInjection";
 import registerRoutes from "./routes";
@@ -17,6 +18,7 @@ export default class Server {
     this.express = express();
     this.express.use(express.json());
     this.express.use(express.urlencoded({ extended: true }));
+    this.express.use(morgan("tiny"));
     const router = express.Router();
     this.express.use(router);
     registerRoutes(router);

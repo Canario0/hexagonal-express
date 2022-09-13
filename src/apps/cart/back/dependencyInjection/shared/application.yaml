@@ -5,7 +5,7 @@ services:
 
   Shared.TypeORMConfig:
     factory:
-      class: ../../../../../contexts/cartsMs/shared/infrastructure/typeORMConfigFactory
+      class: ../../../../../contexts/cartsMs/shared/infrastructure/typeORM/typeORMConfigFactory
       method: "createConfig"
 
   Shared.TypeORMClientFactory:
