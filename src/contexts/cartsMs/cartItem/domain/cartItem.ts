@@ -1,5 +1,6 @@
 import AggregateRoot from "../../../shared/domain/aggregateRoot";
 import CartId from "../../cart/domain/valueObject/cartId";
+import CartItemAddedDomainEvent from "./cartItemAddedDomainEvent";
 import CartItemCount from "./valueObject/cartItemCount";
 import CartItemId from "./valueObject/cartItemId";
 import { Price } from "./valueObject/price";
@@ -29,6 +30,13 @@ export default class CartItem extends AggregateRoot {
 
   public incrementCount() {
     this._count = this.count.increment();
+    this.record(
+      new CartItemAddedDomainEvent({
+        id: this.id.toString(),
+        price: this.price.value,
+        cartId: this.cartId.toString(),
+      })
+    );
   }
 
   public reduceCount() {
@@ -59,6 +67,14 @@ export default class CartItem extends AggregateRoot {
   }
 
   public static create(id: CartItemId, price: Price, cartId: CartId) {
-    return new CartItem(id, price, CartItemCount.initialize(), cartId);
+    const cart = new CartItem(id, price, CartItemCount.initialize(), cartId);
+    cart.record(
+      new CartItemAddedDomainEvent({
+        id: cart.id.toString(),
+        price: cart.price.value,
+        cartId: cart.cartId.toString(),
+      })
+    );
+    return cart;
   }
 }

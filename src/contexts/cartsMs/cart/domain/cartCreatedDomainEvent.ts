@@ -7,7 +7,7 @@ type CartCreatedDomainEventBody = {
 };
 
 export default class CartCreatedDomainEvent extends DomainEvent {
-  static readonly EVENT_NAME: string = "celtyFake.cartMs.1.event.cart.created";
+  static readonly EVENT_NAME: string = "celtiFake.cartMs.1.event.cart.created";
   public readonly userId: string;
   public readonly validated: boolean;
 

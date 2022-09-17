@@ -1,3 +1,4 @@
+import EventBus from "../../../../shared/domain/eventBus/eventBus";
 import CartRepository from "../../../cart/domain/cartRepository";
 import CartId from "../../../cart/domain/valueObject/cartId";
 import CartExistsChecker from "../../../shared/domain/existsChecker/cartExistsChecker";
@@ -9,7 +10,8 @@ import { Price } from "../../domain/valueObject/price";
 export default class CartItemCreate {
   constructor(
     private cartItemRepository: CartItemRepository,
-    private cartRepository: CartRepository
+    private cartRepository: CartRepository,
+    private eventBus: EventBus
   ) {}
 
   async run(cartId: string, id: string, price: number): Promise<void> {
@@ -24,6 +26,7 @@ export default class CartItemCreate {
       item.incrementCount();
     }
     await this.cartItemRepository.save(item);
+    await this.eventBus.publish(item.pullDomainEvents());
   }
 
   private async ensureCartExists(id: CartId) {

@@ -7,16 +7,19 @@ import { Price } from "../../../../../../contexts/cartsMs/cartItem/domain/valueO
 import InvalidArgumentError from "../../../../../../contexts/shared/domain/invalidArgumentError";
 import Uuid from "../../../../../../contexts/shared/domain/valueObject/uuid";
 import CartRepositoryMock from "../../../cart/__mocks__/cartRepositoryMock";
+import EventBusMock from "../../../shared/__mocks__/eventBusMock";
 import CartItemRepositoryMock from "../../__mocks__/cartItemRepositoryMock";
 
 describe("CartItemCreate Test Suit", () => {
   let cartRepository: CartRepositoryMock;
   let cartItemRepository: CartItemRepositoryMock;
+  let eventBus: EventBusMock;
   let service: CartItemCreate;
   beforeAll(() => {
     cartRepository = new CartRepositoryMock();
     cartItemRepository = new CartItemRepositoryMock();
-    service = new CartItemCreate(cartItemRepository, cartRepository);
+    eventBus = new EventBusMock();
+    service = new CartItemCreate(cartItemRepository, cartRepository, eventBus);
   });
 
   it("Should rise on Invalid Cart Id", async () => {
@@ -70,6 +73,14 @@ describe("CartItemCreate Test Suit", () => {
     expect(lastSavedCartItem.toPrimitives()).toEqual(
       CartItem.create(itemId, price, cartId).toPrimitives()
     );
+    const lastPublishedEvents = eventBus.lastPublishedEvents();
+    expect(lastPublishedEvents).toHaveLength(1);
+    const itemAddedEvent = lastPublishedEvents[0];
+    expect(itemAddedEvent.toPrimitive()).toEqual({
+      id: expect.anything(),
+      price: price.value,
+      cartId: cartId.toString(),
+    });
   });
 
   it("Should update an already created item", async () => {
@@ -77,7 +88,12 @@ describe("CartItemCreate Test Suit", () => {
     const cartId = Uuid.random();
     const itemId = Uuid.random();
     const price = new Price(0.01);
-    const dbItem = CartItem.create(itemId, price, cartId);
+    const dbItem = new CartItem(
+      itemId,
+      price,
+      CartItemCount.initialize(),
+      cartId
+    );
     cartRepository.whenCountByIdReturn(new CartCount(1));
     cartItemRepository.whenFindByIdReturn(dbItem);
     // When
@@ -88,6 +104,13 @@ describe("CartItemCreate Test Suit", () => {
     expect(lastSavedCartItem.toPrimitives()).toEqual(
       new CartItem(itemId, price, new CartItemCount(2), cartId).toPrimitives()
     );
+    const lastPublishedEvents = eventBus.lastPublishedEvents();
+    expect(lastPublishedEvents).toHaveLength(1);
+    const itemAddedEvent = lastPublishedEvents[0];
+    expect(itemAddedEvent.toPrimitive()).toEqual({
+      id: itemId.toString(),
+      price: price.value,
+      cartId: cartId.toString(),
+    });
   });
 });
-

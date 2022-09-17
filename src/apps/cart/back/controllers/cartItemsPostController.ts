@@ -3,10 +3,11 @@ import httpStatus from "http-status";
 import CartNotFoundError from "../../../../contexts/cartsMs/cart/domain/cartNotFoundError";
 import CartItemCreate from "../../../../contexts/cartsMs/cartItem/application/create/cartItemCreate";
 import InvalidArgumentError from "../../../../contexts/shared/domain/invalidArgumentError";
+import Logger from "../../../../contexts/shared/domain/logger";
 import Controller from "./controllers";
 
 export default class CartItemsPostController implements Controller {
-  constructor(private cartItemCreate: CartItemCreate) {}
+  constructor(private cartItemCreate: CartItemCreate, private logger: Logger) {}
 
   async run(req: Request, res: Response) {
     try {
@@ -20,6 +21,7 @@ export default class CartItemsPostController implements Controller {
       } else if (err instanceof CartNotFoundError) {
         res.status(httpStatus.NOT_FOUND).send({ message: err.message });
       } else {
+        this.logger.error(`[${this.constructor.name}] ${err}`);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
       }
     }

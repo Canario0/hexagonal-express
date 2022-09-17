@@ -1,0 +1,6 @@
+services:
+  MailerMs.mails.SendMailOnCartChanged:
+    class: ../../../../../contexts/mailerMs/mail/application/send/sendMailOnCartChanged
+    arguments: ["@Shared.Logger"]
+    tags:
+      - { name: "domainEventSubscriber" }

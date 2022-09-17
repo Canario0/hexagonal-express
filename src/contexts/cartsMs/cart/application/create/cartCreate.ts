@@ -18,7 +18,7 @@ export default class CartCreate {
     const cart = Cart.create(cartId, new UserId(userId));
 
     await this.cartRepository.save(cart);
-    this.eventBus.publish(cart.pullDomainEvents());
+    await this.eventBus.publish(cart.pullDomainEvents());
   }
 
   private async ensureNotInUse(id: CartId) {

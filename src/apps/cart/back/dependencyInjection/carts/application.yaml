@@ -21,4 +21,4 @@ services:
 
   CartsMs.cartItem.CartItemCreate:
     class: ../../../../../contexts/cartsMs/cartItem/application/create/cartItemCreate
-    arguments: ["@CartsMs.cart.CartItemRepository", "@CartsMs.cart.CartRepository" ]
+    arguments: ["@CartsMs.cart.CartItemRepository", "@CartsMs.cart.CartRepository", "@Shared.EventBus"]

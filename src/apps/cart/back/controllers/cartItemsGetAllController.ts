@@ -4,10 +4,14 @@ import CartNotFoundError from "../../../../contexts/cartsMs/cart/domain/cartNotF
 import CartItemFindAll from "../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAll";
 import CartItem from "../../../../contexts/cartsMs/cartItem/domain/cartItem";
 import InvalidArgumentError from "../../../../contexts/shared/domain/invalidArgumentError";
+import Logger from "../../../../contexts/shared/domain/logger";
 import Controller from "./controllers";
 
 export default class CartItemsGetAllController implements Controller {
-  constructor(private cartItemFindAll: CartItemFindAll) {}
+  constructor(
+    private cartItemFindAll: CartItemFindAll,
+    private logger: Logger
+  ) {}
 
   async run(req: Request, res: Response) {
     try {
@@ -20,6 +24,7 @@ export default class CartItemsGetAllController implements Controller {
       } else if (err instanceof CartNotFoundError) {
         res.status(httpStatus.NOT_FOUND).send({ message: err.message });
       } else {
+        this.logger.error(`[${this.constructor.name}] ${err}`);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
       }
     }

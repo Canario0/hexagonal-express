@@ -1,16 +1,16 @@
 services:
   Apps.CartsMs.controllers.CartsGetByIdController:
     class: ../../controllers/cartsGetByIdController
-    arguments: ["@CartsMs.cart.CartFindById"]
+    arguments: ["@CartsMs.cart.CartFindById", "@Shared.Logger"]
 
   Apps.CartsMs.controllers.CartsPostController:
     class: ../../controllers/cartsPostController
-    arguments: ["@CartsMs.cart.CartCreate"]
+    arguments: ["@CartsMs.cart.CartCreate", "@Shared.Logger"]
 
   Apps.CartsMs.controllers.CartsItemsGetAllController:
     class: ../../controllers/cartItemsGetAllController
-    arguments: ["@CartsMs.cartItem.CartItemFindAll"]
+    arguments: ["@CartsMs.cartItem.CartItemFindAll", "@Shared.Logger"]
 
   Apps.CartsMs.controllers.CartsItemsPostController:
     class: ../../controllers/cartItemsPostController
-    arguments: ["@CartsMs.cartItem.CartItemCreate"]
+    arguments: ["@CartsMs.cartItem.CartItemCreate", "@Shared.Logger"]
