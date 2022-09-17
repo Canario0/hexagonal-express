@@ -1,17 +1,21 @@
 import CartCreate from "../../../../../../contexts/cartsMs/cart/application/create/cartCreate";
 import Cart from "../../../../../../contexts/cartsMs/cart/domain/cart";
 import CartAlreadyExists from "../../../../../../contexts/cartsMs/cart/domain/cartAlreadyExists";
+import CartCreatedDomainEvent from "../../../../../../contexts/cartsMs/cart/domain/cartCreatedDomainEvent";
 import CartCount from "../../../../../../contexts/cartsMs/cart/domain/valueObject/cartCount";
 import InvalidArgumentError from "../../../../../../contexts/shared/domain/invalidArgumentError";
 import Uuid from "../../../../../../contexts/shared/domain/valueObject/uuid";
+import EventBusMock from "../../../shared/__mocks__/eventBusMock";
 import CartRepositoryMock from "../../__mocks__/cartRepositoryMock";
 
 describe("CartCreate Test Suit", () => {
   let cartRepository: CartRepositoryMock;
+  let eventBus: EventBusMock;
   let service: CartCreate;
   beforeAll(() => {
     cartRepository = new CartRepositoryMock();
-    service = new CartCreate(cartRepository);
+    eventBus = new EventBusMock();
+    service = new CartCreate(cartRepository, eventBus);
   });
   it("Should rise on Invalid Cart Id", async () => {
     // Given
@@ -45,5 +49,11 @@ describe("CartCreate Test Suit", () => {
     expect(lastSavedCart.toPrimitives()).toEqual(
       Cart.create(cartId, userId).toPrimitives()
     );
+    const publishedEvents = eventBus.lastPublishedEvents();
+    expect(publishedEvents).toHaveLength(1);
+    const createEvent = publishedEvents[0] as CartCreatedDomainEvent;
+    expect(createEvent.aggregateId).toEqual(cartId.toString());
+    expect(createEvent.userId).toEqual(userId.toString());
+    expect(createEvent.validated).toBeFalsy();
   });
 });

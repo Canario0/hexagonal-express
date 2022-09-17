@@ -1,5 +1,6 @@
 import AggregateRoot from "../../../shared/domain/aggregateRoot";
 import CartItem from "../../cartItem/domain/cartItem";
+import CartCreatedDomainEvent from "./cartCreatedDomainEvent";
 import CartId from "./valueObject/cartId";
 import CartItems from "./valueObject/cartItems";
 import CartValidated from "./valueObject/cartValidated";
@@ -59,11 +60,19 @@ export default class Cart extends AggregateRoot {
   }
 
   public static create(id: CartId, userId: UserId) {
-    return new Cart(
+    const cart = new Cart(
       id,
       userId,
       CartValidated.initialize(),
       CartItems.initialize()
     );
+    cart.record(
+      new CartCreatedDomainEvent({
+        id: cart.id.toString(),
+        userId: cart.userId.toString(),
+        validated: cart.validated.value,
+      })
+    );
+    return cart;
   }
 }
