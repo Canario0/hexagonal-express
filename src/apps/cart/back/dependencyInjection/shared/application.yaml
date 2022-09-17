@@ -13,3 +13,49 @@ services:
       class: ../../../../../contexts/shared/infrastructure/typeORM/typeORMClientFactory
       method: "createClient"
     arguments: ["@Shared.TypeORMConfig"]
+
+  Shared.DomainEventMapping:
+    class: ../../../../../contexts/shared/infrastructure/eventBus/domainEventMapping
+    arguments: ["!tagged domainEventSubscriber"]
+
+  Shared.DomainEventJSONDeserializer:
+    class: ../../../../../contexts/shared/infrastructure/eventBus/domainEventJSONDeserializer
+    arguments: ["@Shared.DomainEventMapping"]
+
+  Shared.DomainEventJSONSerializer:
+    class: ../../../../../contexts/shared/infrastructure/eventBus/domainEventJSONSerializer
+    arguments: []
+
+  Shared.RabbitMqConfig:
+    factory:
+      class: ../../../../../contexts/cartsMs/shared/infrastructure/rabbitMqConfigFactory
+      method: "createConfig"
+ 
+  Shared.RabbitMqConnection:
+    class: ../../../../../contexts/shared/infrastructure/eventBus/rabbitMQ/rabbitMqConnection
+    arguments: ["@Shared.RabbitMqConfig"]
+
+  Shared.RabbitMQConfigurer:
+    class: ../../../../../contexts/shared/infrastructure/eventBus/rabbitMQ/rabbitMqConfigurer
+    arguments: ["@Shared.RabbitMqConnection"]
+
+  Shared.EventBus:
+    class: ../../../../../contexts/shared/infrastructure/eventBus/rabbitMQ/rabbitMqEventBus
+    arguments:
+      [
+        "@Shared.Logger",
+        "@Shared.RabbitMqConfig",
+        "@Shared.RabbitMqConnection",
+        "@Shared.DomainEventJSONSerializer",
+      ]
+
+  Shared.EventConsumers:
+    class: ../../../../../contexts/shared/infrastructure/eventBus/rabbitMQ/rabbitMqConsumers
+    arguments:
+      [
+        "@Shared.Logger",
+        "@Shared.RabbitMqConnection",
+        "@Shared.DomainEventJSONDeserializer",
+        "!tagged domainEventSubscriber",
+        "@Shared.RabbitMqConfig",
+      ]

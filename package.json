@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "": "NODE_ENV=dev ts-node ./src/apps/cart/back/command/runConfigureRabbitMQCommand.ts",
+    "prestart:cart": "NODE_ENV=dev ts-node ./src/apps/cart/back/command/runConfigureRabbitMQCommand.ts",
     "start:cart": "NODE_ENV=dev ts-node ./src/apps/cart/back/start.ts",
     "test:cart": "NODE_ENV=dev jest --coverage ./src/tests/contexts/cartsMs/"
   },

@@ -1,4 +1,4 @@
-// import container from "./dependencyInjection";
+import container from "./dependencyInjection";
 import Server from "./server";
 
 export class CartBackendApp {
@@ -27,7 +27,7 @@ export class CartBackendApp {
   }
 
   private async registerSubscribers() {
-    // const eventConsumer = container.get("Shared.EventConsumers");
-    // await eventConsumer.start();
+    const eventConsumer = container.get("Shared.EventConsumers");
+    await eventConsumer.start();
   }
 }
