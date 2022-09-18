@@ -5,7 +5,7 @@ services:
 
   Apps.CartsMs.controllers.CartsPostController:
     class: ../../controllers/cartsPostController
-    arguments: ["@CartsMs.cart.CartCreate", "@Shared.Logger"]
+    arguments: ["@Shared.CommandBus", "@Shared.Logger"]
 
   Apps.CartsMs.controllers.CartsItemsGetAllController:
     class: ../../controllers/cartItemsGetAllController

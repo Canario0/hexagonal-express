@@ -11,6 +11,12 @@ services:
     class: ../../../../../contexts/cartsMs/cart/application/create/cartCreate
     arguments: ["@CartsMs.cart.CartRepository", "@Shared.EventBus"]
 
+  CartsMs.cart.CartCreateCommandHandler:
+    class: ../../../../../contexts/cartsMs/cart/application/create/cartCreateCommandHandler
+    arguments: ["@CartsMs.cart.CartCreate"]
+    tags:
+      - { name: "commandHandler" }
+
   CartsMs.cart.CartItemRepository:
     class: ../../../../../contexts/cartsMs/cartItem/infrastructure/typeORM/typeORMCartItemRepository
     arguments: ["@Shared.TypeORMClientFactory"]
