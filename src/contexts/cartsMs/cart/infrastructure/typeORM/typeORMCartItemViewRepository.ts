@@ -1,21 +1,21 @@
 import _ from "lodash";
 import { ObjectType } from "typeorm";
 import TypeORMRepositry from "../../../../shared/infrastructure/typeORM/typeORMRepository";
-import CartId from "../../../cart/domain/valueObject/cartId";
+import CartId from "../../domain/valueObject/cartId";
 import TypeORMCartItem from "../../../shared/infrastructure/typeORM/entities/typeORMCartItem";
-import CartItem from "../../domain/cartItem";
-import CartItemRepository from "../../domain/cartItemRepository";
-import CartItemId from "../../domain/valueObject/cartItemId";
+import CartItemView from "../../domain/read/cartItemView";
+import CartItemViewRepository from "../../domain/read/cartItemViewRepository";
+import ProductId from "../../domain/valueObject/productId";
 
-export default class TypeORMCartItemRepository
+export default class TypeORMCartItemViewRepository
   extends TypeORMRepositry<TypeORMCartItem>
-  implements CartItemRepository
+  implements CartItemViewRepository
 {
   protected entity(): ObjectType<TypeORMCartItem> {
     return TypeORMCartItem;
   }
 
-  public async findAll(id: CartId): Promise<CartItem[]> {
+  public async findAll(id: CartId): Promise<CartItemView[]> {
     const cartItemRepository = await this.getRepository();
     const rawCartItems = await cartItemRepository.find({
       where: { cartId: id.toString() },
@@ -23,7 +23,7 @@ export default class TypeORMCartItemRepository
     return rawCartItems.map(this.toAggregatedRoot);
   }
 
-  public async findById(id: CartItemId): Promise<CartItem | null> {
+  public async findById(id: ProductId): Promise<CartItemView | null> {
     const cartItemRepository = await this.getRepository();
     const rawCartItem = await cartItemRepository.findOne({
       where: { id: id.toString() },
@@ -34,13 +34,13 @@ export default class TypeORMCartItemRepository
     return this.toAggregatedRoot(rawCartItem);
   }
 
-  public async save(cart: CartItem): Promise<void> {
+  public async save(cart: CartItemView): Promise<void> {
     const entity = cart.toPrimitives();
     await this.persist(entity);
   }
 
   private toAggregatedRoot(rawCartItem: TypeORMCartItem) {
-    return CartItem.fromPrimitives({
+    return CartItemView.fromPrimitives({
       id: rawCartItem.id,
       price: rawCartItem.price,
       count: rawCartItem.count,

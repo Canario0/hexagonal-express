@@ -1,7 +1,7 @@
 import InvalidArgumentError from "../../../../shared/domain/invalidArgumentError";
 import ValueObject from "../../../../shared/domain/valueObject/valueObject";
 
-export class Price implements ValueObject<Price> {
+export default class CartVersion implements ValueObject<CartVersion> {
   public readonly value: number;
 
   constructor(value: number) {
@@ -10,7 +10,7 @@ export class Price implements ValueObject<Price> {
     this.value = value;
   }
 
-  public equals(o: Price): boolean {
+  public equals(o: CartVersion): boolean {
     return this.value === o.value;
   }
 
@@ -22,16 +22,24 @@ export class Price implements ValueObject<Price> {
     return this.value.toString();
   }
 
+  public increment(): CartVersion {
+    return new CartVersion(this.value + 1);
+  }
+
+  static initialize(): CartVersion {
+    return new CartVersion(0);
+  }
+
   private ensureExists(value: number) {
     if (value == null) {
-      throw new InvalidArgumentError(`The Money must be set.`);
+      throw new InvalidArgumentError(`The Version must be set.`);
     }
   }
 
   private ensureNonNegative(value: number) {
     if (value < 0) {
       throw new InvalidArgumentError(
-        `The Price must be equals or greater to 0.`
+        `The Version must be equals or greater to 0.`
       );
     }
   }

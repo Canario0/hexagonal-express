@@ -1,4 +1,4 @@
-import Cart from "../../../../../contexts/cartsMs/cart/domain/cart";
+import CartView from "../../../../../contexts/cartsMs/cart/domain/read/cartView";
 import CartRepository from "../../../../../contexts/cartsMs/cart/domain/cartRepository";
 import CartCount from "../../../../../contexts/cartsMs/cart/domain/valueObject/cartCount";
 import cartId from "../../../../../contexts/cartsMs/cart/domain/valueObject/cartId";
@@ -8,7 +8,7 @@ export default class CartRepositoryMock implements CartRepository {
   private mockCountById = jest.fn();
   private mockSave = jest.fn();
 
-  public whenSearchByIdReturn(cart: Cart | null) {
+  public whenSearchByIdReturn(cart: CartView | null) {
     this.mockSearchById.mockResolvedValue(cart);
   }
 
@@ -16,12 +16,12 @@ export default class CartRepositoryMock implements CartRepository {
     this.mockCountById.mockResolvedValue(count);
   }
 
-  public lastSavedCart(): Cart {
+  public lastSavedCart(): CartView {
     const mock = this.mockSave.mock;
-    return mock.calls[mock.calls.length - 1][0] as Cart;
+    return mock.calls[mock.calls.length - 1][0] as CartView;
   }
 
-  public async findById(id: cartId): Promise<Cart | null> {
+  public async findById(id: cartId): Promise<CartView | null> {
     return this.mockSearchById(id);
   }
 
@@ -29,7 +29,7 @@ export default class CartRepositoryMock implements CartRepository {
     return this.mockCountById(id);
   }
 
-  public async save(cart: Cart): Promise<void> {
+  public async save(cart: CartView): Promise<void> {
     this.mockSave(cart);
   }
 }

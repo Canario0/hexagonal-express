@@ -2,7 +2,7 @@ import CartFindById from "../../../../../../contexts/cartsMs/cart/application/fi
 import CartFindByIdQuery from "../../../../../../contexts/cartsMs/cart/application/findById/cartFindByIdQuery";
 import CartFindByIdQueryHandler from "../../../../../../contexts/cartsMs/cart/application/findById/cartFindByIdQueryHandler";
 import CartFindByIdResponse from "../../../../../../contexts/cartsMs/cart/application/findById/cartFindByIdResponse";
-import Cart from "../../../../../../contexts/cartsMs/cart/domain/cart";
+import CartView from "../../../../../../contexts/cartsMs/cart/domain/read/cartView";
 import CartNotFoundError from "../../../../../../contexts/cartsMs/cart/domain/cartNotFoundError";
 import CartId from "../../../../../../contexts/cartsMs/cart/domain/valueObject/cartId";
 import CartItems from "../../../../../../contexts/cartsMs/cart/domain/valueObject/cartItems";
@@ -45,7 +45,7 @@ describe("CartFindById Test Suit", () => {
     // Given
     const cartId = CartId.random();
     const userId = UserId.random();
-    cartRepository.whenSearchByIdReturn(Cart.create(cartId, userId));
+    cartRepository.whenSearchByIdReturn(CartView.create(cartId, userId));
     const query = new CartFindByIdQuery(cartId.toString());
     // When
     const cartResponse: CartFindByIdResponse = await queryBus.ask(query);

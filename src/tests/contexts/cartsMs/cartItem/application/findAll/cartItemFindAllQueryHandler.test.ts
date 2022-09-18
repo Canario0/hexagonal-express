@@ -4,9 +4,8 @@ import CartItemFindAll from "../../../../../../contexts/cartsMs/cartItem/applica
 import CartItemFindAllQuery from "../../../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAllQuery";
 import CartItemFindAllQueryHandler from "../../../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAllQueryHandler";
 import CartItemFindAllResponse from "../../../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAllResponse";
-import CartItem from "../../../../../../contexts/cartsMs/cartItem/domain/cartItem";
-import CartItemCount from "../../../../../../contexts/cartsMs/cartItem/domain/valueObject/cartItemCount";
-import { Price } from "../../../../../../contexts/cartsMs/cartItem/domain/valueObject/price";
+import CartItemView from "../../../../../../contexts/cartsMs/cart/domain/read/cartItemView";
+import CartItemCount from "../../../../../../contexts/cartsMs/cart/domain/valueObject/cartItemCount";
 import InvalidArgumentError from "../../../../../../contexts/shared/domain/invalidArgumentError";
 import QueryBus from "../../../../../../contexts/shared/domain/queryBus/queryBus";
 import Uuid from "../../../../../../contexts/shared/domain/valueObject/uuid";
@@ -14,6 +13,7 @@ import InMemoryQueryBus from "../../../../../../contexts/shared/infrastructure/q
 import QueryHandlersMapper from "../../../../../../contexts/shared/infrastructure/queryBus/queryHandlersMapper";
 import CartRepositoryMock from "../../../cart/__mocks__/cartRepositoryMock";
 import CartItemRepositoryMock from "../../__mocks__/cartItemRepositoryMock";
+import Price from "../../../../../../contexts/cartsMs/cart/domain/valueObject/price";
 
 describe("CartItemFindAll Test Suit", () => {
   let cartRepository: CartRepositoryMock;
@@ -48,13 +48,13 @@ describe("CartItemFindAll Test Suit", () => {
     // Given
     const validCartId = Uuid.random();
     cartRepository.whenCountByIdReturn(new CartCount(1));
-    const item1 = new CartItem(
+    const item1 = new CartItemView(
       Uuid.random(),
       new Price(3),
       new CartItemCount(2),
       validCartId
     );
-    const item2 = new CartItem(
+    const item2 = new CartItemView(
       Uuid.random(),
       new Price(0.5),
       new CartItemCount(4),

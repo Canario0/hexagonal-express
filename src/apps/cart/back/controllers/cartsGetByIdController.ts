@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import httpStatus from "http-status";
 import CartFindByIdQuery from "../../../../contexts/cartsMs/cart/application/findById/cartFindByIdQuery";
 import CartFindByIdResponse from "../../../../contexts/cartsMs/cart/application/findById/cartFindByIdResponse";
-import Cart from "../../../../contexts/cartsMs/cart/domain/cart";
+import CartView from "../../../../contexts/cartsMs/cart/domain/read/cartView";
 import CartNotFoundError from "../../../../contexts/cartsMs/cart/domain/cartNotFoundError";
 import InvalidArgumentError from "../../../../contexts/shared/domain/invalidArgumentError";
 import Logger from "../../../../contexts/shared/domain/logger";
@@ -29,7 +29,7 @@ export default class CartsGetByIdController implements Controller {
     }
   }
 
-  private toResponse(cart: Cart) {
+  private toResponse(cart: CartView) {
     return {
       id: cart.id.toJSON(),
       userId: cart.userId.toJSON(),

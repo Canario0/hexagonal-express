@@ -1,7 +1,7 @@
 import CartCreate from "../../../../../../contexts/cartsMs/cart/application/create/cartCreate";
 import CartCreateCommand from "../../../../../../contexts/cartsMs/cart/application/create/cartCreateCommand";
 import CartCreateCommandHandler from "../../../../../../contexts/cartsMs/cart/application/create/cartCreateCommandHandler";
-import Cart from "../../../../../../contexts/cartsMs/cart/domain/cart";
+import CartView from "../../../../../../contexts/cartsMs/cart/domain/read/cartView";
 import CartAlreadyExists from "../../../../../../contexts/cartsMs/cart/domain/cartAlreadyExists";
 import CartCreatedDomainEvent from "../../../../../../contexts/cartsMs/cart/domain/cartCreatedDomainEvent";
 import CartCount from "../../../../../../contexts/cartsMs/cart/domain/valueObject/cartCount";
@@ -56,9 +56,9 @@ describe("CartCreate Test Suit", () => {
     await commandBus.dispatch(command);
     const lastSavedCart = cartRepository.lastSavedCart();
     // Then
-    expect(lastSavedCart).toBeInstanceOf(Cart);
+    expect(lastSavedCart).toBeInstanceOf(CartView);
     expect(lastSavedCart.toPrimitives()).toEqual(
-      Cart.create(cartId, userId).toPrimitives()
+      CartView.create(cartId, userId).toPrimitives()
     );
     const publishedEvents = eventBus.lastPublishedEvents();
     expect(publishedEvents).toHaveLength(1);

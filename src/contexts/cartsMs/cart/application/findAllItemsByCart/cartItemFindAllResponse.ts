@@ -1,10 +1,10 @@
 import Response from "../../../../shared/domain/queryBus/response";
-import CartItem from "../../domain/cartItem";
+import CartItemView from "../../../cart/domain/read/cartItemView";
 
 export default class CartItemFindAllResponse implements Response {
-  public readonly cartItems: CartItem[];
+  public readonly cartItems: CartItemView[];
 
-  constructor(cartItems: CartItem[]) {
+  constructor(cartItems: CartItemView[]) {
     this.cartItems = cartItems;
   }
 }

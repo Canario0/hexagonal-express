@@ -1,18 +1,17 @@
-import AggregateRoot from "../../../shared/domain/aggregateRoot";
-import CartId from "../../cart/domain/valueObject/cartId";
-import CartItemAddedDomainEvent from "./cartItemAddedDomainEvent";
-import CartItemCount from "./valueObject/cartItemCount";
-import CartItemId from "./valueObject/cartItemId";
-import { Price } from "./valueObject/price";
+import AggregateRoot from "../../../../shared/domain/aggregateRoot";
+import CartId from "../valueObject/cartId";
+import CartItemCount from "../valueObject/cartItemCount";
+import ProductId from "../valueObject/productId";
+import Price from "../valueObject/price";
 
 export default class CartItem extends AggregateRoot {
-  public readonly id: CartItemId;
+  public readonly id: ProductId;
   public readonly price: Price;
   public readonly cartId: CartId;
   private _count: CartItemCount;
 
   constructor(
-    id: CartItemId,
+    id: ProductId,
     price: Price,
     count: CartItemCount,
     cartId: CartId
@@ -30,13 +29,6 @@ export default class CartItem extends AggregateRoot {
 
   public incrementCount() {
     this._count = this.count.increment();
-    this.record(
-      new CartItemAddedDomainEvent({
-        id: this.id.toString(),
-        price: this.price.value,
-        cartId: this.cartId.toString(),
-      })
-    );
   }
 
   public reduceCount() {
@@ -59,21 +51,19 @@ export default class CartItem extends AggregateRoot {
     cartId: string;
   }) {
     return new CartItem(
-      new CartItemId(data.id),
+      new ProductId(data.id),
       new Price(data.price),
       new CartItemCount(data.count),
       new CartId(data.cartId)
     );
   }
 
-  public static create(id: CartItemId, price: Price, cartId: CartId) {
-    const cart = new CartItem(id, price, CartItemCount.initialize(), cartId);
-    cart.record(
-      new CartItemAddedDomainEvent({
-        id: cart.id.toString(),
-        price: cart.price.value,
-        cartId: cart.cartId.toString(),
-      })
+  public static create(id: ProductId, price: Price, cartId: CartId) {
+    const cart = new CartItem(
+      id,
+      price,
+      CartItemCount.initialize(),
+      cartId
     );
     return cart;
   }

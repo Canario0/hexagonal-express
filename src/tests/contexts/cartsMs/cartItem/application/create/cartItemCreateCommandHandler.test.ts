@@ -3,9 +3,8 @@ import CartCount from "../../../../../../contexts/cartsMs/cart/domain/valueObjec
 import CartItemCreate from "../../../../../../contexts/cartsMs/cartItem/application/create/cartItemCreate";
 import CartItemCreateCommand from "../../../../../../contexts/cartsMs/cartItem/application/create/cartItemCreateCommand";
 import CartItemCreateCommandHandler from "../../../../../../contexts/cartsMs/cartItem/application/create/cartItemCreateCommandHandler";
-import CartItem from "../../../../../../contexts/cartsMs/cartItem/domain/cartItem";
-import CartItemCount from "../../../../../../contexts/cartsMs/cartItem/domain/valueObject/cartItemCount";
-import { Price } from "../../../../../../contexts/cartsMs/cartItem/domain/valueObject/price";
+import CartItemView from "../../../../../../contexts/cartsMs/cart/domain/read/cartItemView";
+import CartItemCount from "../../../../../../contexts/cartsMs/cart/domain/valueObject/cartItemCount";
 import CommandBus from "../../../../../../contexts/shared/domain/commandBus/commandBus";
 import InvalidArgumentError from "../../../../../../contexts/shared/domain/invalidArgumentError";
 import Uuid from "../../../../../../contexts/shared/domain/valueObject/uuid";
@@ -14,6 +13,7 @@ import InMemoryCommandBus from "../../../../../../contexts/shared/infrastructure
 import CartRepositoryMock from "../../../cart/__mocks__/cartRepositoryMock";
 import EventBusMock from "../../../shared/__mocks__/eventBusMock";
 import CartItemRepositoryMock from "../../__mocks__/cartItemRepositoryMock";
+import Price from "../../../../../../contexts/cartsMs/cart/domain/valueObject/price";
 
 describe("CartItemCreate Test Suit", () => {
   let cartRepository: CartRepositoryMock;
@@ -106,9 +106,9 @@ describe("CartItemCreate Test Suit", () => {
     await commandBus.dispatch(command);
     const lastSavedCartItem = cartItemRepository.lastSavedCartItem();
     // Then
-    expect(lastSavedCartItem).toBeInstanceOf(CartItem);
+    expect(lastSavedCartItem).toBeInstanceOf(CartItemView);
     expect(lastSavedCartItem.toPrimitives()).toEqual(
-      CartItem.create(itemId, price, cartId).toPrimitives()
+      CartItemView.create(itemId, price, cartId).toPrimitives()
     );
     const lastPublishedEvents = eventBus.lastPublishedEvents();
     expect(lastPublishedEvents).toHaveLength(1);
@@ -125,7 +125,7 @@ describe("CartItemCreate Test Suit", () => {
     const cartId = Uuid.random();
     const itemId = Uuid.random();
     const price = new Price(0.01);
-    const dbItem = new CartItem(
+    const dbItem = new CartItemView(
       itemId,
       price,
       CartItemCount.initialize(),
@@ -142,9 +142,9 @@ describe("CartItemCreate Test Suit", () => {
     await commandBus.dispatch(command);
     const lastSavedCartItem = cartItemRepository.lastSavedCartItem();
     // Then
-    expect(lastSavedCartItem).toBeInstanceOf(CartItem);
+    expect(lastSavedCartItem).toBeInstanceOf(CartItemView);
     expect(lastSavedCartItem.toPrimitives()).toEqual(
-      new CartItem(itemId, price, new CartItemCount(2), cartId).toPrimitives()
+      new CartItemView(itemId, price, new CartItemCount(2), cartId).toPrimitives()
     );
     const lastPublishedEvents = eventBus.lastPublishedEvents();
     expect(lastPublishedEvents).toHaveLength(1);

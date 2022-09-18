@@ -1,22 +1,21 @@
-import AggregateRoot from "../../../shared/domain/aggregateRoot";
-import CartItem from "../../cartItem/domain/cartItem";
-import CartCreatedDomainEvent from "./cartCreatedDomainEvent";
-import CartId from "./valueObject/cartId";
-import CartItems from "./valueObject/cartItems";
-import CartValidated from "./valueObject/cartValidated";
-import UserId from "./valueObject/userId";
+import AggregateRoot from "../../../../shared/domain/aggregateRoot";
+import CartItemView from "./cartItemView";
+import CartId from "../valueObject/cartId";
+import CartValidated from "../valueObject/cartValidated";
+import UserId from "../valueObject/userId";
+import CartItemsView from "./cartItemsView";
 
-export default class Cart extends AggregateRoot {
+export default class CartView extends AggregateRoot {
   public readonly id: CartId;
   public readonly userId: UserId;
   private _validated: CartValidated;
-  private _items: CartItems;
+  private _items: CartItemsView;
 
   public constructor(
     id: CartId,
     userId: UserId,
     validated: CartValidated,
-    items: CartItems
+    items: CartItemsView
   ) {
     super();
     this.id = id;
@@ -50,28 +49,23 @@ export default class Cart extends AggregateRoot {
     validated: boolean;
     items: { id: string; price: number; count: number; cartId: string }[];
   }) {
-    const cartItems = data.items.map((item) => CartItem.fromPrimitives(item));
-    return new Cart(
+    const cartItems = data.items.map((item) =>
+      CartItemView.fromPrimitives(item)
+    );
+    return new CartView(
       new CartId(data.id),
       new UserId(data.userId),
       new CartValidated(data.validated),
-      new CartItems(cartItems)
+      new CartItemsView(cartItems)
     );
   }
 
   public static create(id: CartId, userId: UserId) {
-    const cart = new Cart(
+    const cart = new CartView(
       id,
       userId,
       CartValidated.initialize(),
-      CartItems.initialize()
-    );
-    cart.record(
-      new CartCreatedDomainEvent({
-        id: cart.id.toString(),
-        userId: cart.userId.toString(),
-        validated: cart.validated.value,
-      })
+      CartItemsView.initialize()
     );
     return cart;
   }

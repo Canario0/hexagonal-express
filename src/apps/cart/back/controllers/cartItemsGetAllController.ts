@@ -3,7 +3,7 @@ import httpStatus from "http-status";
 import CartNotFoundError from "../../../../contexts/cartsMs/cart/domain/cartNotFoundError";
 import CartItemFindAllQuery from "../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAllQuery";
 import CartItemFindAllResponse from "../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAllResponse";
-import CartItem from "../../../../contexts/cartsMs/cartItem/domain/cartItem";
+import CartItemView from "../../../../contexts/cartsMs/cart/domain/read/cartItemView";
 import InvalidArgumentError from "../../../../contexts/shared/domain/invalidArgumentError";
 import Logger from "../../../../contexts/shared/domain/logger";
 import QueryBus from "../../../../contexts/shared/domain/queryBus/queryBus";
@@ -32,7 +32,7 @@ export default class CartItemsGetAllController implements Controller {
     }
   }
 
-  private toResponse(items: CartItem[]) {
+  private toResponse(items: CartItemView[]) {
     return items.map((cartItem) => ({
       id: cartItem.id,
       price: cartItem.price,

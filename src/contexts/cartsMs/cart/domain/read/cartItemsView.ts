@@ -1,11 +1,11 @@
 import ValueObject from "../../../../shared/domain/valueObject/valueObject";
-import CartItem from "../../../cartItem/domain/cartItem";
-import CartItemId from "../../../cartItem/domain/valueObject/cartItemId";
+import ProductId from "../valueObject/productId";
+import CartItemView from "./cartItemView";
 
-export default class CartItems implements ValueObject<CartItems> {
-  private _value: Map<string, CartItem>;
+export default class CartItemsView implements ValueObject<CartItemsView> {
+  private _value: Map<string, CartItemView>;
 
-  constructor(items: CartItem[]) {
+  constructor(items: CartItemView[]) {
     this._value = new Map(items.map((item) => [item.id.toString(), item]));
   }
 
@@ -13,7 +13,7 @@ export default class CartItems implements ValueObject<CartItems> {
     return new Map(this._value);
   }
 
-  public equals(o: CartItems): boolean {
+  public equals(o: CartItemsView): boolean {
     return Array.from(this._value.values()).every((item) => o.has(item.id));
   }
 
@@ -31,27 +31,27 @@ export default class CartItems implements ValueObject<CartItems> {
     return Array.from(this.value.values());
   }
 
-  public has(id: CartItemId): boolean {
+  public has(id: ProductId): boolean {
     return this._value.has(id.toString());
   }
 
-  public get(id: CartItemId): CartItem | null {
+  public get(id: ProductId): CartItemView | null {
     const item = this._value.get(id.toString());
     return item ?? null;
   }
 
-  public add(item: CartItem): CartItems {
+  public add(item: CartItemView): CartItemsView {
     const newValue = this.value.set(item.id.toString(), item);
-    return new CartItems(Array.from(newValue.values()));
+    return new CartItemsView(Array.from(newValue.values()));
   }
 
-  public delete(id: CartItemId): CartItems {
+  public delete(id: ProductId): CartItemsView {
     const newValue = this.value;
     newValue.delete(id.toString());
-    return new CartItems(Array.from(newValue.values()));
+    return new CartItemsView(Array.from(newValue.values()));
   }
 
-  public static initialize(): CartItems {
-    return new CartItems([]);
+  public static initialize(): CartItemsView {
+    return new CartItemsView([]);
   }
 }

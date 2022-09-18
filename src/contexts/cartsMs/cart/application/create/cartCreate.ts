@@ -1,5 +1,5 @@
 import EventBus from "../../../../shared/domain/eventBus/eventBus";
-import Cart from "../../domain/cart";
+import CartView from "../../domain/read/cartView";
 import CartAlreadyExists from "../../domain/cartAlreadyExists";
 import CartRepository from "../../domain/cartRepository";
 import CartId from "../../domain/valueObject/cartId";
@@ -15,7 +15,7 @@ export default class CartCreate {
     const cartId = new CartId(id);
     await this.ensureNotInUse(cartId);
 
-    const cart = Cart.create(cartId, new UserId(userId));
+    const cart = CartView.create(cartId, new UserId(userId));
 
     await this.cartRepository.save(cart);
     await this.eventBus.publish(cart.pullDomainEvents());

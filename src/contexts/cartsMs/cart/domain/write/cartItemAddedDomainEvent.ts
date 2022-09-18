@@ -1,40 +1,50 @@
-import DomainEvent from "../../../shared/domain/eventBus/domainEvent";
+import DomainEvent from "../../../../shared/domain/eventBus/domainEvent";
 
 type CartItemAddedDomainEventBody = {
   readonly id: string;
+  readonly version: number;
   readonly price: number;
-  readonly cartId: string;
+  readonly productId: string;
 };
 
 export default class CartItemAddedDomainEvent extends DomainEvent {
   static readonly EVENT_NAME: string =
     "celtiFake.cartMs.1.event.cartItem.added";
   public readonly price: number;
-  public readonly cartId: string;
+  public readonly productId: string;
 
   public constructor({
     id,
+    version,
     price,
-    cartId,
+    productId,
     eventId,
     occurredOn,
   }: {
     id: string;
+    version: number;
     price: number;
-    cartId: string;
+    productId: string;
     eventId?: string;
     occurredOn?: Date;
   }) {
-    super(CartItemAddedDomainEvent.EVENT_NAME, id, eventId, occurredOn);
+    super(
+      CartItemAddedDomainEvent.EVENT_NAME,
+      id,
+      eventId,
+      occurredOn,
+      version
+    );
     this.price = price;
-    this.cartId = cartId;
+    this.productId = productId;
   }
 
   public toPrimitive(): CartItemAddedDomainEventBody {
     return {
       id: this.aggregateId,
+      version: this.aggregateVersion!,
       price: this.price,
-      cartId: this.cartId,
+      itemId: this.productId,
     };
   }
 
@@ -46,8 +56,9 @@ export default class CartItemAddedDomainEvent extends DomainEvent {
   ): CartItemAddedDomainEvent {
     return new CartItemAddedDomainEvent({
       id: aggregateId,
+      version: body.version,
       price: body.price,
-      cartId: body.cartId,
+      productId: body.productId,
       eventId,
       occurredOn,
     });

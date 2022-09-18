@@ -1,13 +1,13 @@
-import CartRepository from "../../../cart/domain/cartRepository";
 import CartId from "../../../cart/domain/valueObject/cartId";
 import CartExistsChecker from "../../../shared/domain/existsChecker/cartExistsChecker";
-import CartItemRepository from "../../domain/cartItemRepository";
+import CartItemViewRepository from "../../../cart/domain/read/cartItemViewRepository";
 import CartItemFindAllResponse from "./cartItemFindAllResponse";
+import CartViewRepository from "../../../cart/domain/read/cartViewRepository";
 
 export default class CartItemFindAll {
   constructor(
-    private cartItemRepository: CartItemRepository,
-    private cartRepository: CartRepository
+    private cartItemRepository: CartItemViewRepository,
+    private cartRepository: CartViewRepository
   ) {}
 
   public async run(id: string): Promise<CartItemFindAllResponse> {
