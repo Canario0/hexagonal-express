@@ -1,38 +1,47 @@
 import CartNotFoundError from "../../../../../../contexts/cartsMs/cart/domain/cartNotFoundError";
 import CartCount from "../../../../../../contexts/cartsMs/cart/domain/valueObject/cartCount";
 import CartItemFindAll from "../../../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAll";
+import CartItemFindAllQuery from "../../../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAllQuery";
+import CartItemFindAllQueryHandler from "../../../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAllQueryHandler";
+import CartItemFindAllResponse from "../../../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAllResponse";
 import CartItem from "../../../../../../contexts/cartsMs/cartItem/domain/cartItem";
 import CartItemCount from "../../../../../../contexts/cartsMs/cartItem/domain/valueObject/cartItemCount";
 import { Price } from "../../../../../../contexts/cartsMs/cartItem/domain/valueObject/price";
 import InvalidArgumentError from "../../../../../../contexts/shared/domain/invalidArgumentError";
+import QueryBus from "../../../../../../contexts/shared/domain/queryBus/queryBus";
 import Uuid from "../../../../../../contexts/shared/domain/valueObject/uuid";
+import InMemoryQueryBus from "../../../../../../contexts/shared/infrastructure/queryBus/inMemoryQueryBus";
+import QueryHandlersMapper from "../../../../../../contexts/shared/infrastructure/queryBus/queryHandlersMapper";
 import CartRepositoryMock from "../../../cart/__mocks__/cartRepositoryMock";
 import CartItemRepositoryMock from "../../__mocks__/cartItemRepositoryMock";
 
 describe("CartItemFindAll Test Suit", () => {
   let cartRepository: CartRepositoryMock;
   let cartItemRepository: CartItemRepositoryMock;
-  let service: CartItemFindAll;
+  let queryBus: QueryBus;
   beforeAll(() => {
     cartRepository = new CartRepositoryMock();
     cartItemRepository = new CartItemRepositoryMock();
-    service = new CartItemFindAll(cartItemRepository, cartRepository);
+    const service = new CartItemFindAll(cartItemRepository, cartRepository);
+    const queryHandler = new CartItemFindAllQueryHandler(service);
+    const queryhandlersMapper = new QueryHandlersMapper([queryHandler]);
+    queryBus = new InMemoryQueryBus(queryhandlersMapper);
   });
 
   it("Should rise on Invalid Cart Id", async () => {
     // Given
+    const query = new CartItemFindAllQuery("NonUUID");
     // When/Then
-    await expect(service.run("NonUUID")).rejects.toThrow(InvalidArgumentError);
+    await expect(queryBus.ask(query)).rejects.toThrow(InvalidArgumentError);
   });
 
   it("Should rise on Missing Cart Error", async () => {
     // Given
     const missingCartId = Uuid.random();
     cartRepository.whenCountByIdReturn(new CartCount(0));
+    const query = new CartItemFindAllQuery(missingCartId.toString());
     // When/Then
-    await expect(service.run(missingCartId.toString())).rejects.toThrow(
-      CartNotFoundError
-    );
+    await expect(queryBus.ask(query)).rejects.toThrow(CartNotFoundError);
   });
 
   it("Should return a list of cart items.", async () => {
@@ -52,8 +61,10 @@ describe("CartItemFindAll Test Suit", () => {
       validCartId
     );
     cartItemRepository.whenFindAllReturn([item1, item2]);
+    const query = new CartItemFindAllQuery(validCartId.toString());
     // When
-    const cartItems = await service.run(validCartId.toString());
+    const cartItemsReponse: CartItemFindAllResponse = await queryBus.ask(query);
+    const cartItems = cartItemsReponse.cartItems;
     // Then
     expect(cartItems).toHaveLength(2);
     expect(item1.toPrimitives()).toEqual(cartItems[0].toPrimitives());

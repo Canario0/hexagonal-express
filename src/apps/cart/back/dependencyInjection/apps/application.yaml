@@ -9,7 +9,7 @@ services:
 
   Apps.CartsMs.controllers.CartsItemsGetAllController:
     class: ../../controllers/cartItemsGetAllController
-    arguments: ["@CartsMs.cartItem.CartItemFindAll", "@Shared.Logger"]
+    arguments: ["@Shared.QueryBus", "@Shared.Logger"]
 
   Apps.CartsMs.controllers.CartsItemsPostController:
     class: ../../controllers/cartItemsPostController

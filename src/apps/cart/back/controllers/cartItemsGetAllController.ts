@@ -1,23 +1,25 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import CartNotFoundError from "../../../../contexts/cartsMs/cart/domain/cartNotFoundError";
-import CartItemFindAll from "../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAll";
+import CartItemFindAllQuery from "../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAllQuery";
+import CartItemFindAllResponse from "../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAllResponse";
 import CartItem from "../../../../contexts/cartsMs/cartItem/domain/cartItem";
 import InvalidArgumentError from "../../../../contexts/shared/domain/invalidArgumentError";
 import Logger from "../../../../contexts/shared/domain/logger";
+import QueryBus from "../../../../contexts/shared/domain/queryBus/queryBus";
 import Controller from "./controllers";
 
 export default class CartItemsGetAllController implements Controller {
-  constructor(
-    private cartItemFindAll: CartItemFindAll,
-    private logger: Logger
-  ) {}
+  constructor(private queryBus: QueryBus, private logger: Logger) {}
 
   async run(req: Request, res: Response) {
     try {
       const { cartId } = req.params;
-      const items = await this.cartItemFindAll.run(cartId);
-      res.status(httpStatus.OK).send(this.toResponse(items));
+      const query = new CartItemFindAllQuery(cartId);
+      const itemsResponse: CartItemFindAllResponse = await this.queryBus.ask(
+        query
+      );
+      res.status(httpStatus.OK).send(this.toResponse(itemsResponse.cartItems));
     } catch (err) {
       if (err instanceof InvalidArgumentError) {
         res.status(httpStatus.BAD_REQUEST).send({ message: err.message });

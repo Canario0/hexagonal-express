@@ -31,6 +31,12 @@ services:
     class: ../../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAll
     arguments: ["@CartsMs.cart.CartItemRepository", "@CartsMs.cart.CartRepository" ]
 
+  CartsMs.cartItem.CartItemFindAllQueryHandler:
+    class: ../../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAllQueryHandler
+    arguments: ["@CartsMs.cartItem.CartItemFindAll"]
+    tags:
+      - { name: "queryHandler" }
+
   CartsMs.cartItem.CartItemCreate:
     class: ../../../../../contexts/cartsMs/cartItem/application/create/cartItemCreate
     arguments: ["@CartsMs.cart.CartItemRepository", "@CartsMs.cart.CartRepository", "@Shared.EventBus"]
