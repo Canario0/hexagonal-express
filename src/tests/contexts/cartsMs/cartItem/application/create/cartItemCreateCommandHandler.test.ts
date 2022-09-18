@@ -1,11 +1,16 @@
 import CartNotFoundError from "../../../../../../contexts/cartsMs/cart/domain/cartNotFoundError";
 import CartCount from "../../../../../../contexts/cartsMs/cart/domain/valueObject/cartCount";
 import CartItemCreate from "../../../../../../contexts/cartsMs/cartItem/application/create/cartItemCreate";
+import CartItemCreateCommand from "../../../../../../contexts/cartsMs/cartItem/application/create/cartItemCreateCommand";
+import CartItemCreateCommandHandler from "../../../../../../contexts/cartsMs/cartItem/application/create/cartItemCreateCommandHandler";
 import CartItem from "../../../../../../contexts/cartsMs/cartItem/domain/cartItem";
 import CartItemCount from "../../../../../../contexts/cartsMs/cartItem/domain/valueObject/cartItemCount";
 import { Price } from "../../../../../../contexts/cartsMs/cartItem/domain/valueObject/price";
+import CommandBus from "../../../../../../contexts/shared/domain/commandBus/commandBus";
 import InvalidArgumentError from "../../../../../../contexts/shared/domain/invalidArgumentError";
 import Uuid from "../../../../../../contexts/shared/domain/valueObject/uuid";
+import CommandHandlersMapper from "../../../../../../contexts/shared/infrastructure/commandBus/commandHandlersMapper";
+import InMemoryCommandBus from "../../../../../../contexts/shared/infrastructure/commandBus/inMemoryCommandBus";
 import CartRepositoryMock from "../../../cart/__mocks__/cartRepositoryMock";
 import EventBusMock from "../../../shared/__mocks__/eventBusMock";
 import CartItemRepositoryMock from "../../__mocks__/cartItemRepositoryMock";
@@ -14,36 +19,58 @@ describe("CartItemCreate Test Suit", () => {
   let cartRepository: CartRepositoryMock;
   let cartItemRepository: CartItemRepositoryMock;
   let eventBus: EventBusMock;
-  let service: CartItemCreate;
+  let commandBus: CommandBus;
   beforeAll(() => {
     cartRepository = new CartRepositoryMock();
     cartItemRepository = new CartItemRepositoryMock();
     eventBus = new EventBusMock();
-    service = new CartItemCreate(cartItemRepository, cartRepository, eventBus);
+    const service = new CartItemCreate(
+      cartItemRepository,
+      cartRepository,
+      eventBus
+    );
+    const commandHandler = new CartItemCreateCommandHandler(service);
+    const commandHandlersMapper = new CommandHandlersMapper([commandHandler]);
+    commandBus = new InMemoryCommandBus(commandHandlersMapper);
   });
 
   it("Should rise on Invalid Cart Id", async () => {
     // Given
+    const command = new CartItemCreateCommand(
+      "NonUUID",
+      Uuid.random().toString(),
+      3
+    );
     // When/Then
-    await expect(
-      service.run("NonUUID", Uuid.random().toString(), 3)
-    ).rejects.toThrow(InvalidArgumentError);
+    await expect(commandBus.dispatch(command)).rejects.toThrow(
+      InvalidArgumentError
+    );
   });
 
   it("Should rise on Invalid Cart Item Id", async () => {
     // Given
+    const command = new CartItemCreateCommand(
+      Uuid.random().toString(),
+      "NonUUID",
+      3
+    );
     // When/Then
-    await expect(
-      service.run(Uuid.random().toString(), "NonUUID", 3)
-    ).rejects.toThrow(InvalidArgumentError);
+    await expect(commandBus.dispatch(command)).rejects.toThrow(
+      InvalidArgumentError
+    );
   });
 
   it("Should rise on Invalid Price value", async () => {
     // Given
+    const command = new CartItemCreateCommand(
+      Uuid.random().toString(),
+      Uuid.random().toString(),
+      -1
+    );
     // When/Then
-    await expect(
-      service.run(Uuid.random().toString(), "NonUUID", -1)
-    ).rejects.toThrow(InvalidArgumentError);
+    await expect(commandBus.dispatch(command)).rejects.toThrow(
+      InvalidArgumentError
+    );
   });
 
   it("Should rise on Missing Cart Error", async () => {
@@ -52,10 +79,15 @@ describe("CartItemCreate Test Suit", () => {
     const itemId = Uuid.random();
     const price = 0.1;
     cartRepository.whenCountByIdReturn(new CartCount(0));
+    const command = new CartItemCreateCommand(
+      missingCartId.toString(),
+      itemId.toString(),
+      price
+    );
     // When/Then
-    await expect(
-      service.run(missingCartId.toString(), itemId.toString(), price)
-    ).rejects.toThrow(CartNotFoundError);
+    await expect(commandBus.dispatch(command)).rejects.toThrow(
+      CartNotFoundError
+    );
   });
 
   it("Should create a new item", async () => {
@@ -65,8 +97,13 @@ describe("CartItemCreate Test Suit", () => {
     const price = new Price(0.01);
     cartRepository.whenCountByIdReturn(new CartCount(1));
     cartItemRepository.whenFindByIdReturn(null);
+    const command = new CartItemCreateCommand(
+      cartId.toString(),
+      itemId.toString(),
+      price.value
+    );
     // When
-    await service.run(cartId.toString(), itemId.toString(), price.value);
+    await commandBus.dispatch(command);
     const lastSavedCartItem = cartItemRepository.lastSavedCartItem();
     // Then
     expect(lastSavedCartItem).toBeInstanceOf(CartItem);
@@ -96,8 +133,13 @@ describe("CartItemCreate Test Suit", () => {
     );
     cartRepository.whenCountByIdReturn(new CartCount(1));
     cartItemRepository.whenFindByIdReturn(dbItem);
+    const command = new CartItemCreateCommand(
+      cartId.toString(),
+      itemId.toString(),
+      price.value
+    );
     // When
-    await service.run(cartId.toString(), itemId.toString(), price.value);
+    await commandBus.dispatch(command);
     const lastSavedCartItem = cartItemRepository.lastSavedCartItem();
     // Then
     expect(lastSavedCartItem).toBeInstanceOf(CartItem);

@@ -34,3 +34,9 @@ services:
   CartsMs.cartItem.CartItemCreate:
     class: ../../../../../contexts/cartsMs/cartItem/application/create/cartItemCreate
     arguments: ["@CartsMs.cart.CartItemRepository", "@CartsMs.cart.CartRepository", "@Shared.EventBus"]
+
+  CartsMs.cartItem.CartItemCreateCommandHandler:
+    class: ../../../../../contexts/cartsMs/cartItem/application/create/cartItemCreateCommandHandler
+    arguments: ["@CartsMs.cartItem.CartItemCreate"]
+    tags:
+      - { name: "commandHandler" }

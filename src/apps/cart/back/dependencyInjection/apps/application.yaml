@@ -13,4 +13,4 @@ services:
 
   Apps.CartsMs.controllers.CartsItemsPostController:
     class: ../../controllers/cartItemsPostController
-    arguments: ["@CartsMs.cartItem.CartItemCreate", "@Shared.Logger"]
+    arguments: ["@Shared.CommandBus", "@Shared.Logger"]
