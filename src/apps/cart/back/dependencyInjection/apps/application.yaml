@@ -1,7 +1,7 @@
 services:
   Apps.CartsMs.controllers.CartsGetByIdController:
     class: ../../controllers/cartsGetByIdController
-    arguments: ["@CartsMs.cart.CartFindById", "@Shared.Logger"]
+    arguments: ["@Shared.QueryBus", "@Shared.Logger"]
 
   Apps.CartsMs.controllers.CartsPostController:
     class: ../../controllers/cartsPostController

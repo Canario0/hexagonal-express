@@ -7,6 +7,12 @@ services:
     class: ../../../../../contexts/cartsMs/cart/application/findById/cartFindById
     arguments: ["@CartsMs.cart.CartRepository"]
 
+  CartsMs.cart.CartFindByIdQueryHandler:
+    class: ../../../../../contexts/cartsMs/cart/application/findById/cartFindByIdQueryHandler.ts
+    arguments: ["@CartsMs.cart.CartFindById"]
+    tags:
+      - { name: "queryHandler" }
+
   CartsMs.cart.CartCreate:
     class: ../../../../../contexts/cartsMs/cart/application/create/cartCreate
     arguments: ["@CartsMs.cart.CartRepository", "@Shared.EventBus"]
