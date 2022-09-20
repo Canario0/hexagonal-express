@@ -44,7 +44,7 @@ export default class CartItemAddedDomainEvent extends DomainEvent {
       id: this.aggregateId,
       version: this.aggregateVersion!,
       price: this.price,
-      itemId: this.productId,
+      productId: this.productId,
     };
   }
 

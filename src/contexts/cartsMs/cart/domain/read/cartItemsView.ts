@@ -6,7 +6,7 @@ export default class CartItemsView implements ValueObject<CartItemsView> {
   private _value: Map<string, CartItemView>;
 
   constructor(items: CartItemView[]) {
-    this._value = new Map(items.map((item) => [item.id.toString(), item]));
+    this._value = new Map(items.map((item) => [item.productId.toString(), item]));
   }
 
   public get value() {
@@ -14,7 +14,7 @@ export default class CartItemsView implements ValueObject<CartItemsView> {
   }
 
   public equals(o: CartItemsView): boolean {
-    return Array.from(this._value.values()).every((item) => o.has(item.id));
+    return Array.from(this._value.values()).every((item) => o.has(item.productId));
   }
 
   public toJSON() {
@@ -31,23 +31,23 @@ export default class CartItemsView implements ValueObject<CartItemsView> {
     return Array.from(this.value.values());
   }
 
-  public has(id: ProductId): boolean {
-    return this._value.has(id.toString());
+  public has(productId: ProductId): boolean {
+    return this._value.has(productId.toString());
   }
 
-  public get(id: ProductId): CartItemView | null {
-    const item = this._value.get(id.toString());
+  public get(productId: ProductId): CartItemView | null {
+    const item = this._value.get(ProductId.toString());
     return item ?? null;
   }
 
   public add(item: CartItemView): CartItemsView {
-    const newValue = this.value.set(item.id.toString(), item);
+    const newValue = this.value.set(item.productId.toString(), item);
     return new CartItemsView(Array.from(newValue.values()));
   }
 
-  public delete(id: ProductId): CartItemsView {
+  public delete(productId: ProductId): CartItemsView {
     const newValue = this.value;
-    newValue.delete(id.toString());
+    newValue.delete(productId.toString());
     return new CartItemsView(Array.from(newValue.values()));
   }
 

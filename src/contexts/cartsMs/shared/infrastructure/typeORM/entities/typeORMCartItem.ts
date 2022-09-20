@@ -1,10 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, Unique } from "typeorm";
 import TypeORMCart from "./typeORMCart";
 
 @Entity()
+@Unique(["productId", "cartId"])
 export default class TypeORMCartItem {
-  @PrimaryColumn("uuid")
-  id!: string;
+  @Column("uuid")
+  productId!: string;
 
   @Column("float")
   price!: number;

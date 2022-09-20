@@ -5,19 +5,19 @@ import ProductId from "../valueObject/productId";
 import Price from "../valueObject/price";
 
 export default class CartItemView extends AggregateRoot {
-  public readonly id: ProductId;
+  public readonly productId: ProductId;
   public readonly price: Price;
   public readonly cartId: CartId;
   private _count: CartItemCount;
 
   constructor(
-    id: ProductId,
+    productId: ProductId,
     price: Price,
     count: CartItemCount,
     cartId: CartId
   ) {
     super();
-    this.id = id;
+    this.productId = productId;
     this.price = price;
     this._count = count;
     this.cartId = cartId;
@@ -37,7 +37,7 @@ export default class CartItemView extends AggregateRoot {
 
   public toPrimitives() {
     return {
-      id: this.id.toString(),
+      productId: this.productId.toString(),
       price: this.price.value,
       count: this.count.value,
       cartId: this.cartId.toString(),
@@ -45,22 +45,22 @@ export default class CartItemView extends AggregateRoot {
   }
 
   public static fromPrimitives(data: {
-    id: string;
+    productId: string;
     price: number;
-    count: number;
+    count: number
     cartId: string;
   }) {
     return new CartItemView(
-      new ProductId(data.id),
+      new ProductId(data.productId),
       new Price(data.price),
       new CartItemCount(data.count),
       new CartId(data.cartId)
     );
   }
 
-  public static create(id: ProductId, price: Price, cartId: CartId) {
+  public static create(productId: ProductId, price: Price, cartId: CartId) {
     const cart = new CartItemView(
-      id,
+      productId,
       price,
       CartItemCount.initialize(),
       cartId

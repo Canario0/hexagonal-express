@@ -26,7 +26,7 @@ export default class TypeORMCartItemViewRepository
   public async findById(id: ProductId): Promise<CartItemView | null> {
     const cartItemRepository = await this.getRepository();
     const rawCartItem = await cartItemRepository.findOne({
-      where: { id: id.toString() },
+      where: { productId: id.toString() },
     });
     if (rawCartItem === null) {
       return rawCartItem;
@@ -35,7 +35,12 @@ export default class TypeORMCartItemViewRepository
   }
 
   public async save(cart: CartItemView): Promise<void> {
+    const repository = await this.getRepository();
     const entity = cart.toPrimitives();
+    await repository.upsert(entity, {
+      conflictPaths: ["productId", "cartId"],
+      skipUpdateIfNoValuesChanged: true,
+    });
     await this.persist(entity);
   }
 

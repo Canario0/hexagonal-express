@@ -47,7 +47,7 @@ export default class CartView extends AggregateRoot {
     id: string;
     userId: string;
     validated: boolean;
-    items: { id: string; price: number; count: number; cartId: string }[];
+    items: { productId: string; price: number; count: number; cartId: string }[];
   }) {
     const cartItems = data.items.map((item) =>
       CartItemView.fromPrimitives(item)
@@ -60,11 +60,11 @@ export default class CartView extends AggregateRoot {
     );
   }
 
-  public static create(id: CartId, userId: UserId) {
+  public static create(id: CartId, userId: UserId, validated?: CartValidated) {
     const cart = new CartView(
       id,
       userId,
-      CartValidated.initialize(),
+      validated ?? CartValidated.initialize(),
       CartItemsView.initialize()
     );
     return cart;

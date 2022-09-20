@@ -56,7 +56,7 @@ export default class Cart extends EventSourceAggregateRoot {
   }
 
   public addItem(productId: ProductId, price: Price) {
-    this.record(
+    this.apply(
       new CartItemAddedDomainEvent({
         id: this.id.toString(),
         version: this.version.increment().value,
@@ -74,11 +74,11 @@ export default class Cart extends EventSourceAggregateRoot {
 
   public static create(id: CartId, userId: UserId) {
     const cart = new Cart();
-    cart.record(
+    cart.apply(
       new CartCreatedDomainEvent({
-        id: cart.id.toString(),
+        id: id.toString(),
         version: CartVersion.initialize().value,
-        userId: cart.userId.toString(),
+        userId: userId.toString(),
         validated: CartValidated.initialize().value,
       })
     );
@@ -110,5 +110,6 @@ export default class Cart extends EventSourceAggregateRoot {
     }
 
     this._items = this.items.add(cartItem!);
+    this._version = new CartVersion(event.aggregateVersion!);
   }
 }

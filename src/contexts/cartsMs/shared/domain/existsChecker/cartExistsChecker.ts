@@ -1,13 +1,18 @@
+import QueryBus from "../../../../shared/domain/queryBus/queryBus";
+import CartCountByIdQuery from "../../../cart/application/read/countById/cartCountByIdQuery";
+import CartCountByIdResponse from "../../../cart/application/read/countById/cartCountByIdResponse";
 import CartNotFoundError from "../../../cart/domain/cartNotFoundError";
-import CartRepository from "../../../cart/domain/cartRepository";
 import CartId from "../../../cart/domain/valueObject/cartId";
 
 export default class CartExistsChecker {
-  constructor(private cartRepository: CartRepository) {}
+  constructor(private queryBus: QueryBus) {}
 
   public async run(id: CartId) {
-    const cartCount = await this.cartRepository.countById(id);
-    if (cartCount.value === 0) {
+    const query = new CartCountByIdQuery(id.toString());
+    const cartCountResponse: CartCountByIdResponse = await this.queryBus.ask(
+      query
+    );
+    if (cartCountResponse.count.value === 0) {
       throw new CartNotFoundError(id.toString());
     }
   }
