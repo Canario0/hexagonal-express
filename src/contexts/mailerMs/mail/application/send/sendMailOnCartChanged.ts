@@ -1,5 +1,5 @@
-import CartCreatedDomainEvent from "../../../../cartsMs/cart/domain/cartCreatedDomainEvent";
-import CartItemAddedDomainEvent from "../../../../cartsMs/cart/domain/cartItemAddedDomainEvent";
+import CartCreatedDomainEvent from "../../../../cartsMs/cart/domain/write/cartCreatedDomainEvent";
+import CartItemAddedDomainEvent from "../../../../cartsMs/cart/domain/write/cartItemAddedDomainEvent";
 import { DomainEventClass } from "../../../../shared/domain/eventBus/domainEvent";
 import DomainEventSubscriber from "../../../../shared/domain/eventBus/domainEventSubscriber";
 import Logger from "../../../../shared/domain/logger";
