@@ -1,48 +1,82 @@
 services:
-  CartsMs.cart.CartRepository:
-    class: ../../../../../contexts/cartsMs/cart/infrastructure/typeORM/typeORMCartRepository
+  CartsMs.cart.CartViewRepository:
+    class: ../../../../../contexts/cartsMs/cart/infrastructure/typeORM/typeORMCartViewRepository
+    arguments: ["@Shared.TypeORMClientFactory"]
+
+  CartsMs.cart.CartEventStore:
+    class: ../../../../../contexts/cartsMs/cart/infrastructure/typeORM/typeORMCartEventStore
     arguments: ["@Shared.TypeORMClientFactory"]
 
   CartsMs.cart.CartFindById:
-    class: ../../../../../contexts/cartsMs/cart/application/findById/cartFindById
-    arguments: ["@CartsMs.cart.CartRepository"]
+    class: ../../../../../contexts/cartsMs/cart/application/read/findById/cartFindById
+    arguments: ["@CartsMs.cart.CartViewRepository"]
 
   CartsMs.cart.CartFindByIdQueryHandler:
-    class: ../../../../../contexts/cartsMs/cart/application/findById/cartFindByIdQueryHandler.ts
+    class: ../../../../../contexts/cartsMs/cart/application/read/findById/cartFindByIdQueryHandler
     arguments: ["@CartsMs.cart.CartFindById"]
     tags:
       - { name: "queryHandler" }
 
+  CartsMs.cart.CartCountById:
+    class: ../../../../../contexts/cartsMs/cart/application/read/countById/cartCountById
+    arguments: ["@CartsMs.cart.CartViewRepository"]
+
+  CartsMs.cart.CartCountByIdQueryHandler:
+    class: ../../../../../contexts/cartsMs/cart/application/read/countById/cartCountByIdQueryHandler
+    arguments: ["@CartsMs.cart.CartCountById"]
+    tags:
+      - { name: "queryHandler" }
+
   CartsMs.cart.CartCreate:
-    class: ../../../../../contexts/cartsMs/cart/application/create/cartCreate
-    arguments: ["@CartsMs.cart.CartRepository", "@Shared.EventBus"]
+    class: ../../../../../contexts/cartsMs/cart/application/write/create/cartCreate
+    arguments: ["@CartsMs.cart.CartEventStore", "@Shared.EventBus", "@Shared.QueryBus"]
+
+  CartsMs.cart.CartViewCreate:
+    class: ../../../../../contexts/cartsMs/cart/application/read/create/cartViewCreate
+    arguments: ["@CartsMs.cart.CartViewRepository"]
+
+  CartMs.cart.CartViewCreateOnCartViewCreated:
+    class: ../../../../../contexts/cartsMs/cart/application/read/create/cartViewCreateOnCartCreated
+    arguments: ["@CartsMs.cart.CartViewCreate"]
+    tags:
+      - { name: "domainEventSubscriber" }
 
   CartsMs.cart.CartCreateCommandHandler:
-    class: ../../../../../contexts/cartsMs/cart/application/create/cartCreateCommandHandler
+    class: ../../../../../contexts/cartsMs/cart/application/write/create/cartCreateCommandHandler
     arguments: ["@CartsMs.cart.CartCreate"]
     tags:
       - { name: "commandHandler" }
 
-  CartsMs.cart.CartItemRepository:
-    class: ../../../../../contexts/cartsMs/cartItem/infrastructure/typeORM/typeORMCartItemRepository
+  CartsMs.cart.CartItemViewRepository:
+    class: ../../../../../contexts/cartsMs/cart/infrastructure/typeORM/typeORMCartItemViewRepository
     arguments: ["@Shared.TypeORMClientFactory"]
 
   CartsMs.cartItem.CartItemFindAll:
-    class: ../../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAll
-    arguments: ["@CartsMs.cart.CartItemRepository", "@CartsMs.cart.CartRepository" ]
+    class: ../../../../../contexts/cartsMs/cart/application/read/findAllItemsByCart/cartItemFindAll
+    arguments: ["@CartsMs.cart.CartItemViewRepository", "@Shared.QueryBus" ]
 
   CartsMs.cartItem.CartItemFindAllQueryHandler:
-    class: ../../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAllQueryHandler
+    class: ../../../../../contexts/cartsMs/cart/application/read/findAllItemsByCart/cartItemFindAllQueryHandler
     arguments: ["@CartsMs.cartItem.CartItemFindAll"]
     tags:
       - { name: "queryHandler" }
 
-  CartsMs.cartItem.CartItemCreate:
-    class: ../../../../../contexts/cartsMs/cartItem/application/create/cartItemCreate
-    arguments: ["@CartsMs.cart.CartItemRepository", "@CartsMs.cart.CartRepository", "@Shared.EventBus"]
+  CartsMs.cartItem.CartAddItem:
+    class: ../../../../../contexts/cartsMs/cart/application/write/addItem/cartAddItem
+    arguments: ["@CartsMs.cart.CartEventStore", "@Shared.EventBus", "@Shared.QueryBus"]
 
-  CartsMs.cartItem.CartItemCreateCommandHandler:
-    class: ../../../../../contexts/cartsMs/cartItem/application/create/cartItemCreateCommandHandler
-    arguments: ["@CartsMs.cartItem.CartItemCreate"]
+  CartsMs.cartItem.CartAddItemCommandHandler:
+    class: ../../../../../contexts/cartsMs/cart/application/write/addItem/cartAddItemCommandHandler
+    arguments: ["@CartsMs.cartItem.CartAddItem"]
     tags:
       - { name: "commandHandler" }
+
+  CartsMs.cart.CartAddItemView:
+    class: ../../../../../contexts/cartsMs/cart/application/read/addItem/cartAddItemView
+    arguments: ["@CartsMs.cart.CartItemViewRepository"]
+
+  CartMs.cart.CartAddItemViewOnCartItemAdded:
+    class: ../../../../../contexts/cartsMs/cart/application/read/addItem/cartAddItemViewOnCartItemAdded
+    arguments: ["@CartsMs.cart.CartAddItemView"]
+    tags:
+      - { name: "domainEventSubscriber" }

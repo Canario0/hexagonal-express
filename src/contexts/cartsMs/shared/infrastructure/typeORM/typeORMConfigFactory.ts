@@ -1,6 +1,7 @@
 import { DataSourceOptions } from "typeorm";
 import TypeORMCart from "./entities/typeORMCart";
 import TypeORMCartItem from "./entities/typeORMCartItem";
+import TypeORMDomainEvent from "./entities/typeOrmEvent";
 
 export default class TypeORMConfigFactory {
   static createConfig(): DataSourceOptions {
@@ -16,7 +17,7 @@ export default class TypeORMConfigFactory {
       // to database corruption
       synchronize: true,
       logging: false,
-      entities: [TypeORMCart, TypeORMCartItem],
+      entities: [TypeORMCart, TypeORMCartItem, TypeORMDomainEvent],
       migrations: [],
       subscribers: [],
     };

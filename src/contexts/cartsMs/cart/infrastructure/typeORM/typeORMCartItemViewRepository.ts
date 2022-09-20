@@ -34,6 +34,20 @@ export default class TypeORMCartItemViewRepository
     return this.toAggregatedRoot(rawCartItem);
   }
 
+  public async findByProductAndCart(
+    productId: ProductId,
+    cartId: CartId
+  ): Promise<CartItemView | null> {
+    const cartItemRepository = await this.getRepository();
+    const rawCartItem = await cartItemRepository.findOne({
+      where: { productId: productId.toString(), cartId: cartId.toString() },
+    });
+    if (rawCartItem === null) {
+      return rawCartItem;
+    }
+    return this.toAggregatedRoot(rawCartItem);
+  }
+
   public async save(cart: CartItemView): Promise<void> {
     const repository = await this.getRepository();
     const entity = cart.toPrimitives();
@@ -41,12 +55,11 @@ export default class TypeORMCartItemViewRepository
       conflictPaths: ["productId", "cartId"],
       skipUpdateIfNoValuesChanged: true,
     });
-    await this.persist(entity);
   }
 
   private toAggregatedRoot(rawCartItem: TypeORMCartItem) {
     return CartItemView.fromPrimitives({
-      id: rawCartItem.id,
+      productId: rawCartItem.productId,
       price: rawCartItem.price,
       count: rawCartItem.count,
       cartId: rawCartItem.cartId,

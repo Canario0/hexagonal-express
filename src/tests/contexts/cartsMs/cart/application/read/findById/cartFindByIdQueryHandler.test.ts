@@ -9,7 +9,6 @@ import CartId from "../../../../../../../contexts/cartsMs/cart/domain/valueObjec
 import CartValidated from "../../../../../../../contexts/cartsMs/cart/domain/valueObject/cartValidated";
 import UserId from "../../../../../../../contexts/cartsMs/cart/domain/valueObject/userId";
 import InvalidArgumentError from "../../../../../../../contexts/shared/domain/invalidArgumentError";
-import QueryBus from "../../../../../../../contexts/shared/domain/queryBus/queryBus";
 import Uuid from "../../../../../../../contexts/shared/domain/valueObject/uuid";
 import InMemoryQueryBus from "../../../../../../../contexts/shared/infrastructure/queryBus/inMemoryQueryBus";
 import QueryHandlersMapper from "../../../../../../../contexts/shared/infrastructure/queryBus/queryHandlersMapper";
@@ -17,13 +16,14 @@ import CartViewRepositoryMock from "../../../__mocks__/cartViewRepositoryMock";
 
 describe("CartFindById Test Suit", () => {
   let cartViewRepository: CartViewRepositoryMock;
-  let queryBus: QueryBus;
+  let queryBus: InMemoryQueryBus;
   beforeAll(() => {
     cartViewRepository = new CartViewRepositoryMock();
     const service = new CartViewFindById(cartViewRepository);
     const queryHandler = new CartFindByIdQueryHandler(service);
     const queryhandlersMapper = new QueryHandlersMapper([queryHandler]);
-    queryBus = new InMemoryQueryBus(queryhandlersMapper);
+    queryBus = new InMemoryQueryBus();
+    queryBus.queryHandlersMapper = queryhandlersMapper;
   });
   it("Should rise on Invalid Cart Id", async () => {
     // Given

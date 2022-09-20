@@ -3,10 +3,20 @@ import CommandBus from "../../domain/commandBus/commandBus";
 import CommandHandlersMapper from "./commandHandlersMapper";
 
 export default class InMemoryCommandBus implements CommandBus {
-  constructor(private commandHandlersMapper: CommandHandlersMapper) {}
+  private _commandHandlersMapper: CommandHandlersMapper;
+
+  constructor() {
+    this._commandHandlersMapper = new CommandHandlersMapper([]);
+  }
+
+  public set commandHandlersMapper(
+    commandHandlersMapper: CommandHandlersMapper
+  ) {
+    this._commandHandlersMapper = commandHandlersMapper;
+  }
 
   async dispatch(command: Command): Promise<void> {
-    const handler = this.commandHandlersMapper.search(command);
+    const handler = this._commandHandlersMapper.search(command);
     await handler.handle(command);
   }
 }

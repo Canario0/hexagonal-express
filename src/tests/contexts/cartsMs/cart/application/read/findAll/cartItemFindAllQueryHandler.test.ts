@@ -10,7 +10,6 @@ import CartCount from "../../../../../../../contexts/cartsMs/cart/domain/valueOb
 import CartItemCount from "../../../../../../../contexts/cartsMs/cart/domain/valueObject/cartItemCount";
 import Price from "../../../../../../../contexts/cartsMs/cart/domain/valueObject/price";
 import InvalidArgumentError from "../../../../../../../contexts/shared/domain/invalidArgumentError";
-import QueryBus from "../../../../../../../contexts/shared/domain/queryBus/queryBus";
 import Uuid from "../../../../../../../contexts/shared/domain/valueObject/uuid";
 import InMemoryQueryBus from "../../../../../../../contexts/shared/infrastructure/queryBus/inMemoryQueryBus";
 import QueryHandlersMapper from "../../../../../../../contexts/shared/infrastructure/queryBus/queryHandlersMapper";
@@ -20,23 +19,23 @@ import CartViewRepositoryMock from "../../../__mocks__/cartViewRepositoryMock";
 describe("CartItemFindAll Test Suit", () => {
   let cartViewRepository: CartViewRepositoryMock;
   let cartItemViewRepository: CartItemViewRepositoryMock;
-  let queryBus: QueryBus;
+  let queryBus: InMemoryQueryBus;
   beforeAll(() => {
+    queryBus = new InMemoryQueryBus();
     cartViewRepository = new CartViewRepositoryMock();
     const countByIdService = new CartCountById(cartViewRepository);
     const cartCountByIdQueryHandler = new CartCountByIdQueryHandler(
       countByIdService
     );
-    const countQueryBus = new InMemoryQueryBus(
-      new QueryHandlersMapper([cartCountByIdQueryHandler])
-    );
-
     cartItemViewRepository = new CartItemViewRepositoryMock();
-    const service = new CartItemViewFindAll(cartItemViewRepository, countQueryBus);
+    const service = new CartItemViewFindAll(cartItemViewRepository, queryBus);
     const queryHandler = new CartItemFindAllQueryHandler(service);
 
-    const queryhandlersMapper = new QueryHandlersMapper([queryHandler]);
-    queryBus = new InMemoryQueryBus(queryhandlersMapper);
+    const queryhandlersMapper = new QueryHandlersMapper([
+      queryHandler,
+      cartCountByIdQueryHandler,
+    ]);
+    queryBus.queryHandlersMapper = queryhandlersMapper;
   });
 
   it("Should rise on Invalid Cart Id", async () => {

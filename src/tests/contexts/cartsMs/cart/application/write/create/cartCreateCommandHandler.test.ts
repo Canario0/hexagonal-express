@@ -6,9 +6,7 @@ import CartCreateCommandHandler from "../../../../../../../contexts/cartsMs/cart
 import CartAlreadyExists from "../../../../../../../contexts/cartsMs/cart/domain/cartAlreadyExists";
 import CartCount from "../../../../../../../contexts/cartsMs/cart/domain/valueObject/cartCount";
 import CartCreatedDomainEvent from "../../../../../../../contexts/cartsMs/cart/domain/write/cartCreatedDomainEvent";
-import CommandBus from "../../../../../../../contexts/shared/domain/commandBus/commandBus";
 import InvalidArgumentError from "../../../../../../../contexts/shared/domain/invalidArgumentError";
-import QueryBus from "../../../../../../../contexts/shared/domain/queryBus/queryBus";
 import Uuid from "../../../../../../../contexts/shared/domain/valueObject/uuid";
 import CommandHandlersMapper from "../../../../../../../contexts/shared/infrastructure/commandBus/commandHandlersMapper";
 import InMemoryCommandBus from "../../../../../../../contexts/shared/infrastructure/commandBus/inMemoryCommandBus";
@@ -22,8 +20,8 @@ describe("CartCreateCommandHandler Test Suit", () => {
   let cartViewRepository: CartViewRepositoryMock;
   let cartEventStore: CartEventStoreMock;
   let eventBus: EventBusMock;
-  let commandBus: CommandBus;
-  let queryBus: QueryBus;
+  let commandBus: InMemoryCommandBus;
+  let queryBus: InMemoryQueryBus;
   beforeAll(() => {
     cartViewRepository = new CartViewRepositoryMock();
     const countByIdService = new CartCountById(cartViewRepository);
@@ -32,12 +30,14 @@ describe("CartCreateCommandHandler Test Suit", () => {
 
     cartEventStore = new CartEventStoreMock();
     eventBus = new EventBusMock();
-    queryBus = new InMemoryQueryBus(queryMapper);
+    queryBus = new InMemoryQueryBus();
+    queryBus.queryHandlersMapper = queryMapper;
     const service = new CartCreate(cartEventStore, eventBus, queryBus);
 
     const commandHandler = new CartCreateCommandHandler(service);
     const commandHandlersMapper = new CommandHandlersMapper([commandHandler]);
-    commandBus = new InMemoryCommandBus(commandHandlersMapper);
+    commandBus = new InMemoryCommandBus();
+    commandBus.commandHandlersMapper = commandHandlersMapper;
   });
   it("Should rise on Invalid Cart Id", async () => {
     // Given

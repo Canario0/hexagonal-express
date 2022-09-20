@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
+import CartAddItemCommand from "../../../../contexts/cartsMs/cart/application/write/addItem/cartAddItemCommand";
 import CartNotFoundError from "../../../../contexts/cartsMs/cart/domain/cartNotFoundError";
-import CartItemCreateCommand from "../../../../contexts/cartsMs/cartItem/application/create/cartItemCreateCommand";
 import CommandBus from "../../../../contexts/shared/domain/commandBus/commandBus";
 import InvalidArgumentError from "../../../../contexts/shared/domain/invalidArgumentError";
 import Logger from "../../../../contexts/shared/domain/logger";
@@ -14,7 +14,7 @@ export default class CartItemsPostController implements Controller {
     try {
       const { cartId } = req.params;
       const { id, price } = req.body;
-      const command = new CartItemCreateCommand(cartId, id, price);
+      const command = new CartAddItemCommand(cartId, id, price);
       await this.commandBus.dispatch(command);
       res.status(httpStatus.CREATED).send();
     } catch (err) {

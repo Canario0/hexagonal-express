@@ -10,7 +10,8 @@ describe("InMemoryCommandBus", () => {
     // Given
     const unhandledCommand = new UnhandledCommand();
     const commandHandlersMapper = new CommandHandlersMapper([]);
-    const commandBus = new InMemoryCommandBus(commandHandlersMapper);
+    const commandBus = new InMemoryCommandBus();
+    commandBus.commandHandlersMapper = commandHandlersMapper;
     // When/Then
     await expect(commandBus.dispatch(unhandledCommand)).rejects.toBeInstanceOf(
       CommandNotRegisteredError
@@ -24,7 +25,8 @@ describe("InMemoryCommandBus", () => {
     const commandHandlersMapper = new CommandHandlersMapper([
       commandHandlerDummy,
     ]);
-    const commandBus = new InMemoryCommandBus(commandHandlersMapper);
+    const commandBus = new InMemoryCommandBus();
+    commandBus.commandHandlersMapper = commandHandlersMapper;
     // When
     await commandBus.dispatch(dummyCommand);
     // Then

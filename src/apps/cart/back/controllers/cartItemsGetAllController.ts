@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
+import CartItemFindAllQuery from "../../../../contexts/cartsMs/cart/application/read/findAllItemsByCart/cartItemFindAllQuery";
+import CartItemFindAllResponse from "../../../../contexts/cartsMs/cart/application/read/findAllItemsByCart/cartItemFindAllResponse";
 import CartNotFoundError from "../../../../contexts/cartsMs/cart/domain/cartNotFoundError";
-import CartItemFindAllQuery from "../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAllQuery";
-import CartItemFindAllResponse from "../../../../contexts/cartsMs/cartItem/application/findAll/cartItemFindAllResponse";
 import CartItemView from "../../../../contexts/cartsMs/cart/domain/read/cartItemView";
 import InvalidArgumentError from "../../../../contexts/shared/domain/invalidArgumentError";
 import Logger from "../../../../contexts/shared/domain/logger";
@@ -34,7 +34,7 @@ export default class CartItemsGetAllController implements Controller {
 
   private toResponse(items: CartItemView[]) {
     return items.map((cartItem) => ({
-      id: cartItem.id,
+      productId: cartItem.productId,
       price: cartItem.price,
       count: cartItem.count,
       cartId: cartItem.cartId,

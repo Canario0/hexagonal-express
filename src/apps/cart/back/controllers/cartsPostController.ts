@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
-import CartCreateCommand from "../../../../contexts/cartsMs/cart/application/create/cartCreateCommand";
+import CartCreateCommand from "../../../../contexts/cartsMs/cart/application/write/create/cartCreateCommand";
 import CartAlreadyExists from "../../../../contexts/cartsMs/cart/domain/cartAlreadyExists";
 import CommandBus from "../../../../contexts/shared/domain/commandBus/commandBus";
 import InvalidArgumentError from "../../../../contexts/shared/domain/invalidArgumentError";

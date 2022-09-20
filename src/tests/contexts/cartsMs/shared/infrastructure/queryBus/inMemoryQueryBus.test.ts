@@ -11,7 +11,8 @@ describe("InMemoryQueryBus", () => {
     // Given
     const unhandledQuery = new UnhandledQuery();
     const queryHandlersMapper = new QueryHandlersMapper([]);
-    const queryBus = new InMemoryQueryBus(queryHandlersMapper);
+    const queryBus = new InMemoryQueryBus();
+    queryBus.queryHandlersMapper = queryHandlersMapper;
     // When/Then
     await expect(queryBus.ask(unhandledQuery)).rejects.toBeInstanceOf(
       QueryNotRegisteredError
@@ -25,7 +26,8 @@ describe("InMemoryQueryBus", () => {
     const expectedResponse = new DummyQueryResponse();
     queryHandlerDummy.queryHandlerMock.mockResolvedValue(expectedResponse);
     const queryHandlersMapper = new QueryHandlersMapper([queryHandlerDummy]);
-    const queryBus = new InMemoryQueryBus(queryHandlersMapper);
+    const queryBus = new InMemoryQueryBus();
+    queryBus.queryHandlersMapper = queryHandlersMapper;
     // When
     const response = await queryBus.ask(dummyQuery);
     // Then

@@ -1,6 +1,5 @@
 import { DomainEventClass } from "../../../../../shared/domain/eventBus/domainEvent";
 import DomainEventSubscriber from "../../../../../shared/domain/eventBus/domainEventSubscriber";
-import CartCreatedDomainEvent from "../../../domain/write/cartCreatedDomainEvent";
 import CartItemAddedDomainEvent from "../../../domain/write/cartItemAddedDomainEvent";
 import CartAddItemView from "./cartAddItemView";
 

@@ -60,18 +60,10 @@ services:
         "@Shared.RabbitMqConfig",
       ]
 
-  Shared.QueryHandlersMapper:
-    class: ../../../../../contexts/shared/infrastructure/queryBus/queryHandlersMapper
-    arguments: ["!tagged queryHandler"]
-
   Shared.QueryBus:
     class: ../../../../../contexts/shared/infrastructure/queryBus/inMemoryQueryBus
-    arguments: ["@Shared.QueryHandlersMapper"]
-
-  Shared.CommandHandlersMapper:
-    class: ../../../../../contexts/shared/infrastructure/commandBus/commandHandlersMapper
-    arguments: ["!tagged commandHandler"]
+    arguments: []
 
   Shared.CommandBus:
     class: ../../../../../contexts/shared/infrastructure/commandBus/inMemoryCommandBus
-    arguments: ["@Shared.CommandHandlersMapper"]
+    arguments: []
